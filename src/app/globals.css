@@ -1,0 +1,322 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════
+   ANTIGRAVITY LEARNING — Design System (Strategy V2)
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* Couleurs primaires */
+  --color-marine: #020617;
+  --color-marine-light: #1e3a8a;
+  --color-safran: #fbbf24;
+  --color-safran-light: #fcd34d;
+  --color-cyan: #00D1FF;
+  
+  /* Glassmorphism Premium (Exact Feedback Tuning) */
+  --glass-bg: rgba(255, 255, 255, 0.05); /* Plus subtil */
+  --glass-border: rgba(255, 255, 255, 0.1); 
+  --glass-border-safran: rgba(251, 191, 36, 0.3);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glass-blur: blur(12px); /* Moins intense que 40px mais plus pur */
+
+  /* Texte & Contraste */
+  --color-text: #FFFFFF;
+  --color-text-dim: rgba(255, 255, 255, 0.8);
+  --color-text-muted: rgba(255, 255, 255, 0.4);
+  --text-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --text-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  /* Rayons */
+  --radius-lg: 32px;
+  --radius-xl: 48px;
+}
+
+body {
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  /* Fond Radial Exact (Feedback utilisateur) */
+  background: radial-gradient(circle at center, var(--color-marine-light) 0%, var(--color-marine) 100%) !important;
+  background-attachment: fixed !important;
+  color: var(--color-text);
+  min-height: 100vh;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background Animated Blobs (Gemini Depth) */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: -1;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+body::before {
+  top: -100px;
+  right: -100px;
+  background: var(--color-cyan);
+  animation: blobFloat 20s infinite alternate;
+}
+
+body::after {
+  bottom: -150px;
+  left: -150px;
+  background: var(--color-safran);
+  animation: blobFloat 25s infinite alternate-reverse;
+}
+
+@keyframes blobFloat {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(100px, 50px) scale(1.1); }
+}
+
+/* ─── Glassmorphism Components ─── */
+
+.glass-sidebar {
+  background: rgba(255, 255, 255, 0.02) !important;
+  backdrop-filter: var(--glass-blur);
+  border-right: 1px solid var(--glass-border) !important;
+}
+
+.glass-card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-lg);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  /* Ombre de texte par défaut pour les cartes */
+  text-shadow: var(--text-shadow-sm);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* ─── Buttons & Actions ─── */
+
+.btn-safran-round {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--color-safran) !important;
+  color: var(--color-marine) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border: none !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  /* Neon Glow Effect */
+  box-shadow: 0 0 20px rgba(255, 200, 0, 0.4), 0 0 40px rgba(255, 200, 0, 0.15) !important;
+}
+
+.btn-safran-round:hover {
+  transform: scale(1.1) rotate(5deg);
+  background-color: #FFFFFF !important;
+  box-shadow: 0 0 30px rgba(255, 200, 0, 0.6), 0 0 60px rgba(255, 200, 0, 0.3) !important;
+}
+
+/* ─── Layout Elements ─── */
+
+.progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--color-safran) !important;
+  /* Neon Glow Line */
+  box-shadow: 0 0 10px rgba(255, 200, 0, 0.8) !important;
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Icons Colors (Varied for identification) */
+.icon-ai { color: #A78BFA; }
+.icon-data { color: #60A5FA; }
+.icon-ethique { color: #F87171; }
+.icon-general { color: #34D399; }
+
+/* ─── Layout Administration — Pixel Perfect ─── */
+
+.admin-layout {
+  display: flex !important;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.admin-sidebar {
+  width: 280px !important;
+  min-width: 280px !important;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 40px 24px;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  margin-bottom: 60px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sidebar-brand-text h2 {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.sidebar-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  flex: 1;
+}
+
+.sidebar-section-title {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-safran);
+  margin: 24px 0 12px 16px;
+}
+
+.sidebar-link {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 14px 18px !important;
+  border-radius: 16px !important;
+  color: var(--color-safran) !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.sidebar-user {
+  margin-top: auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-user-avatar {
+  width: 40px;
+  height: 40px;
+  background: var(--color-safran);
+  color: var(--color-marine);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.sidebar-user-info p {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.sidebar-user-info span {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 0 60px !important;
+  overflow-y: auto;
+  background: transparent; /* Suppression de l'overlay pour le fond radial */
+}
+
+/* ─── Typography & Spacing Catalog ─── */
+
+.catalog-title {
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 48px;
+  margin-left: 0; /* Aligné avec les cartes */
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px !important; /* Espacement augmenté */
+}
+
+/* Icons Colors (Varied for identification) */
+.icon-ai { color: #00D1FF; }    /* Cyan */
+.icon-data { color: #FF4D4D; }  /* Rouge */
+.icon-ethique { color: #8C52FF; } /* Violet */
+.icon-general { color: #FFC800; } /* Safran */
+
+/* ─── Upload Area (Refined Glassmorphism) ─── */
+
+.upload-zone {
+  border: 4px dashed rgba(255, 200, 0, 0.4);
+  border-radius: 48px;
+  padding: 80px 40px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border-spacing: 20px;
+}
+
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: #FFC800;
+  background: rgba(255, 200, 0, 0.05);
+  box-shadow: 0 0 40px rgba(255, 200, 0, 0.1);
+  transform: scale(1.01);
+}
+
+.upload-file-item {
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  transition: all 0.3s ease;
+}
+
+.upload-file-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+
+
+/* Injection CSS pour vérification forcée */
+* { --sidebar-bg: #0B1120 !important; }
