@@ -2,16 +2,10 @@
 
 import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, CheckCircle, AlertCircle, X, ArrowRight } from "lucide-react";
-
-interface FileItem {
-  id: string;
-  file: File;
-  progress: number;
-  status: "pending" | "uploading" | "done" | "error";
-  error?: string;
-  serverId?: string;
-}
+import { Upload, ArrowRight } from "lucide-react";
+import { FileItem } from "@/types";
+import FileUploadItem from "./FileUploadItem";
+import ModuleReviewForm from "./ModuleReviewForm";
 
 const ACCEPTED_TYPES = {
   "application/pdf": "PDF",
@@ -113,7 +107,6 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
     let hasErrors = false;
 
     // 1. Upload Séquentiel pour les fichiers non encore chargés
-    // On utilise une copie pour éviter les problèmes de closure pendant la boucle
     const currentFiles = [...files];
     
     for (const fileItem of currentFiles) {
@@ -136,7 +129,6 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
 
         const result = await response.json();
         
-        // Mise à jour de l'état avec l'ID serveur
         setFiles((prev) =>
           prev.map((f) => (f.id === fileItem.id ? { ...f, status: "done", progress: 100, serverId: result.fileId } : f))
         );
@@ -148,7 +140,6 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
           prev.map((f) => (f.id === fileItem.id ? { ...f, status: "error", error: errorMsg } : f))
         );
         hasErrors = true;
-        // On s'arrête en cas d'erreur sur un fichier pour que l'utilisateur puisse "Réessayer"
         return;
       }
     }
@@ -232,84 +223,14 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
 
   if (isReviewing && reviewData) {
     return (
-      <div className="w-full max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-        <div className="glass-card p-10 border-[#FFC800]/20 shadow-[0_0_50px_rgba(255,200,0,0.1)]">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-[#FFC800]/10 flex items-center justify-center border border-[#FFC800]/20">
-              <CheckCircle size={24} className="text-[#FFC800]" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-black text-white">Analyse de l'IA terminée</h3>
-              <p className="text-white/40 font-medium">Validez ou modifiez les informations de votre nouveau module</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <div>
-                <label className="text-[10px] font-black uppercase text-[#FFC800]/60 tracking-widest block mb-2">Titre du Module</label>
-                <input 
-                  type="text" 
-                  value={reviewData.title}
-                  onChange={(e) => setReviewData({...reviewData, title: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white font-bold focus:outline-none focus:border-[#FFC800]/40 transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] font-black uppercase text-[#FFC800]/60 tracking-widest block mb-2">Description Courte</label>
-                <textarea 
-                  value={reviewData.description}
-                  onChange={(e) => setReviewData({...reviewData, description: e.target.value})}
-                  rows={2}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white font-medium focus:outline-none focus:border-[#FFC800]/40 transition-colors resize-none"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div>
-                <label className="text-[10px] font-black uppercase text-[#FFC800]/60 tracking-widest block mb-2">Objectif Pédagogique</label>
-                <textarea 
-                  value={reviewData.objective}
-                  onChange={(e) => setReviewData({...reviewData, objective: e.target.value})}
-                  rows={6}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white font-medium focus:outline-none focus:border-[#FFC800]/40 transition-colors resize-none"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10 flex items-center justify-between pt-8 border-t border-white/5">
-            <button 
-              onClick={() => setIsReviewing(false)} 
-              className="text-white/40 hover:text-white font-bold text-sm transition-colors"
-            >
-              Annuler et revenir
-            </button>
-            
-            <button 
-              onClick={saveModule}
-              disabled={isSaving || isRedirecting}
-              className="px-10 py-4 rounded-2xl font-black uppercase tracking-widest flex items-center gap-4 hover:scale-105 transition-all text-sm bg-[#fbbf24] text-[#132E53] border-2 border-blue-500/50 hover:border-[#0070FF] hover:shadow-[0_0_30px_rgba(0,112,255,0.6)]"
-            >
-              {isSaving ? (
-                <>GÉNÉRATION EN COURS <div className="w-5 h-5 border-2 border-[#132E53] border-t-transparent rounded-full animate-spin" /></>
-              ) : (
-                <>VALIDER LE MODULE <ArrowRight size={20} /></>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {isRedirecting && (
-          <div className="flex flex-col items-center justify-center animate-pulse text-[#FFC800]">
-            <div className="flex items-center gap-4 font-black uppercase tracking-[0.3em]">
-              Module Créé avec Succès !
-            </div>
-          </div>
-        )}
-      </div>
+      <ModuleReviewForm 
+        reviewData={reviewData}
+        setReviewData={setReviewData}
+        onCancel={() => setIsReviewing(false)}
+        onSave={saveModule}
+        isSaving={isSaving}
+        isRedirecting={isRedirecting}
+      />
     );
   }
 
@@ -352,48 +273,13 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
       {files.length > 0 && (
         <div className="mt-12 space-y-4">
           {files.map((fileItem) => (
-            <div key={fileItem.id} className="upload-file-item glass-card p-6 flex items-center gap-6 group overflow-hidden">
-              <div className={`p-4 rounded-xl ${fileItem.file.type === "application/pdf" ? "bg-red-500/10 text-red-500" : "bg-blue-500/10 text-blue-500"}`}>
-                {fileItem.file.type === "application/pdf" ? "PDF" : "IA"}
-              </div>
-              
-              <div className="flex-1">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="font-bold text-white line-clamp-1">{fileItem.file.name}</p>
-                  <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{formatFileSize(fileItem.file.size)}</span>
-                </div>
-                
-                {fileItem.status === "uploading" ? (
-                  <div className="progress-bar w-full h-1.5">
-                    <div className="progress-fill" style={{ width: `${fileItem.progress}%` }} />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    {fileItem.status === "done" && <><CheckCircle size={14} className="text-green-500" /> <span className="text-xs font-bold text-green-500/80">Analysé</span></>}
-                    {fileItem.status === "error" && (
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 text-red-500">
-                          <AlertCircle size={14} /> 
-                          <span className="text-xs font-bold">{fileItem.error}</span>
-                        </div>
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); retryFile(fileItem.id); }}
-                          className="text-[10px] font-black uppercase tracking-widest text-[#FFC800] hover:underline"
-                        >
-                          Réessayer
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {fileItem.status !== "uploading" && (
-                <button onClick={(e) => { e.stopPropagation(); removeFile(fileItem.id); }} className="p-2 text-white/20 hover:text-white transition-colors">
-                  <X size={20} />
-                </button>
-              )}
-            </div>
+            <FileUploadItem 
+              key={fileItem.id}
+              fileItem={fileItem}
+              onRemove={removeFile}
+              onRetry={retryFile}
+              formatFileSize={formatFileSize}
+            />
           ))}
 
           {/* Actions */}

@@ -6,57 +6,79 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export const maxDuration = 300; 
 
 async function generateModuleInfo(text: string) {
-  const limitedText = text.substring(0, 30000); 
+  const limitedText = text.substring(0, 30000).trim(); 
 
   if (!process.env.GEMINI_API_KEY) {
     console.warn("Clé API Gemini non configurée.");
     return null;
   }
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
-
-  const prompt = `Tu es un expert en pédagogie. Analyse ce cours (issu de plusieurs documents) et génère un objet JSON strict.
-Structure JSON attendue :
+  const apiKey = process.env.GEMINI_API_KEY;
+  const modelsToTry = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.0-flash-lite"];
+  const prompt = `Génère un objet JSON pédagogique à partir de ce texte :
 {
-  "title": "Titre du module global",
-  "objective": "Objectif pédagogique global englobant tous les fichiers",
-  "shortDescription": "Description courte (100 car. max)",
-  "thumbnailPrompt": "Une description textuelle pour la vignette",
+  "title": "Titre du module",
+  "objective": "Objectif global",
+  "shortDescription": "Description (100 car. max)",
+  "thumbnailPrompt": "Vignette style néon",
   "exercises": [
     {
       "type": "TEXTE_A_TROUS",
-      "question": "Texte avec des [TROU] à remplir",
-      "answer": "mot1, mot2",
+      "question": "Texte avec [TROU]",
+      "answer": "réponse",
       "level": "DEBUTANT"
     }
   ]
 }
 
-Règles : 
-- Ne génère QUE des quiz de type TEXTE_A_TROUS ou MOTS_A_CASER.
-- Propose au moins 5 exercices au total.
-- Le format doit être un JSON pur.
+Texte :
+${limitedText || "Analyse ce module général."}`;
 
-Texte complet des documents :
-${limitedText}`;
-
-  try {
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
-    
-    let cleanJson = responseText.trim();
-    if (cleanJson.includes("```json")) {
-      cleanJson = cleanJson.split("```json")[1].split("```")[0];
-    } else if (cleanJson.includes("```")) {
-      cleanJson = cleanJson.split("```")[1].split("```")[0];
+  // Tentative via le SDK avec repli (fallback)
+  for (const modelName of modelsToTry) {
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(prompt);
+      const responseText = result.response.text();
+      
+      let cleanJson = responseText.trim();
+      if (cleanJson.includes("```json")) {
+        cleanJson = cleanJson.split("```json")[1].split("```")[0];
+      }
+      
+      return JSON.parse(cleanJson.trim());
+    } catch (e: any) {
+      if (!e.message.includes("404")) {
+         require("fs").appendFileSync("api_debug.log", `[SDK ERROR] ${modelName}: ${e.message}\n`);
+      }
     }
-    
-    return JSON.parse(cleanJson.trim());
-  } catch (error) {
-    console.error("Erreur Gemini Finalize:", error);
-    return null;
   }
+
+  // ULTIME RECOURS : APPEL REST DIRECT (v1 endpoint)
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
+    });
+
+    if (response.ok) {
+      const data: any = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) {
+        let cleanJson = text.trim();
+        if (cleanJson.includes("```json")) {
+          cleanJson = cleanJson.split("```json")[1].split("```")[0];
+        }
+        return JSON.parse(cleanJson.trim());
+      }
+    }
+  } catch (error: any) {}
+
+  return null;
 }
 
 export async function POST(request: NextRequest) {
@@ -79,14 +101,37 @@ export async function POST(request: NextRequest) {
     let combinedText = "";
     let defaultTitle = "Nouveau Module";
 
-    uploadedFiles.forEach((file, index) => {
-      if (index === 0) {
+    for (const fileRecord of uploadedFiles) {
+      const file = fileRecord as any;
+      if (!defaultTitle || defaultTitle === "Nouveau Module") {
         defaultTitle = file.originalName.replace(/\.[^/.]+$/, "");
       }
-      if (file.extractedText && file.extractedText.length > 10) {
-        combinedText += `\n\n--- Fichier: ${file.originalName} ---\n\n${file.extractedText}`;
+
+      // TENTATIVE DE RÉ-EXTRACTION SI VIDE
+      let textToUse = file.extractedText || "";
+      if (textToUse.length < 10 && file.path && file.category !== 'AUDIO') {
+        try {
+          const fs = require("fs");
+          const path = require("path");
+          const fullPath = path.join(process.cwd(), "public", file.path);
+          
+          if (fs.existsSync(fullPath)) {
+            // Lecture brute pour voir si c'est du texte
+            const content = fs.readFileSync(fullPath).toString('utf-8');
+            if (content.length > 100) {
+              textToUse = content.substring(0, 10000); // On récupère ce qu'on peut
+            }
+          }
+        } catch (err) {}
       }
-    });
+
+      if (textToUse.length > 5) {
+        combinedText += `\n\n--- Fichier: ${file.originalName} ---\n\n${textToUse}`;
+      }
+    }
+
+    // Diagnostique
+    require("fs").appendFileSync("api_debug.log", `[FINALIZE V1] Files: ${uploadedFiles.length}, Text length: ${combinedText.length}\n`);
 
     const aiData = await generateModuleInfo(combinedText);
 

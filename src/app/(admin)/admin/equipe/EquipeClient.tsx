@@ -65,9 +65,9 @@ export default function EquipeClient({
   };
 
   return (
-    <div className="w-full space-y-12 pb-20 pt-20">
+    <div className="w-full space-y-12 pb-20">
       {/* Header */}
-      <header className="mb-16 mt-20">
+      <header className="mb-16">
         <h2 
           className="text-5xl font-black"
           style={{ 

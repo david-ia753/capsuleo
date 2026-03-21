@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { getGlobalStudentsData, getAdminStagiairesData } from "@/app/actions/groups";
+import { getAdminStagiairesData, getGlobalStudentsData } from "@/app/actions/students";
 import { getTeamData } from "@/app/actions/equipe";
 import { StudentsListClient } from "@/components/StudentsListClient";
 
@@ -25,8 +25,8 @@ export default async function StagiairesPage() {
   const trainers = members.filter(m => m.role === "TRAINER") as { id: string; name: string }[];
 
   return (
-    <div className="w-full space-y-12 pt-20">
-      <header className="mb-16 mt-20">
+    <div className="w-full space-y-12">
+      <header className="mb-16">
         <h2 
           className="text-5xl font-black"
           style={{ 

@@ -86,7 +86,7 @@ export default function DashboardClient({
 
   return (
     <div className="w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <header className="mb-12 mt-20">
+      <header className="mb-12 mt-4">
         <h1 
           className="text-4xl font-black mb-2 tracking-tight"
           style={{ 
@@ -225,8 +225,8 @@ export default function DashboardClient({
                        <div className="flex flex-col items-center gap-2">
                          <div className="w-32 h-1.5 bg-white/5 rounded-full overflow-hidden">
                            <div 
-                             className="h-full bg-[#fbbf24] transition-all" 
-                             style={{ width: `${student.totalModules > 0 ? (student.modulesCompleted / student.totalModules) * 100 : 0}%`, boxShadow: "0 0 10px rgba(251, 191, 36, 0.5)" }} 
+                             className="h-full bg-[#fbbf24] transition-all duration-1000" 
+                             style={{ width: `${student.modulesCompleted}%`, boxShadow: "0 0 10px rgba(251, 191, 36, 0.5)" }} 
                            />
                          </div>
                           <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">

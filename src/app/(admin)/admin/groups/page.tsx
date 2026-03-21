@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { getAdminStagiairesData, getGroupModuleIds } from "@/app/actions/groups";
+import { getGroupModuleIds } from "@/app/actions/groups";
+import { getAdminStagiairesData } from "@/app/actions/students";
 import { getTeamData } from "@/app/actions/equipe";
 import StagiairesClient from "../stagiaires/StagiairesClient";
 import { createInvitation, getInvitations } from "@/app/actions/invitations";
@@ -27,8 +28,8 @@ export default async function GroupsPage() {
   }
 
   return (
-    <div className="w-full space-y-12 pt-20">
-      <header className="mb-16 mt-20">
+    <div className="w-full space-y-12">
+      <header className="mb-16">
         <h2 
           className="text-5xl font-black"
           style={{ 

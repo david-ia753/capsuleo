@@ -20,19 +20,21 @@ import {
   Link as LinkIcon,
   Mail
 } from "lucide-react";
-import { createGroup, assignModulesToGroup, updateStudentGroup, assignTrainerToGroup, quickAddStudent } from "@/app/actions/groups";
+import { createGroup, assignModulesToGroup, assignTrainerToGroup } from "@/app/actions/groups";
+import { updateStudentGroup, quickAddStudent } from "@/app/actions/students";
 
 interface Group {
   id: string;
   name: string;
   description: string | null;
   trainerId: string | null;
-  users: { id: string, name: string | null, email: string | null }[];
+  users: { id: string, name: string | null, email: string | null, averageProgress?: number }[];
   trainer: { id: string, name: string | null } | null;
   _count: {
     users: number;
     modules: number;
   };
+  averageProgress?: number;
 }
 
 interface Student {
@@ -40,6 +42,7 @@ interface Student {
   name: string | null;
   email: string | null;
   groupId: string | null;
+  averageProgress?: number;
 }
 
 interface Module {
@@ -254,9 +257,22 @@ export default function StagiairesClient({
                                         </div>
                                         <div>
                                             <h4 className="text-2xl font-black text-white leading-tight">{group.name}</h4>
-                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">
-                                                {group._count.users} Stagiaires • {group._count.modules} Modules
-                                            </p>
+                                            <div className="flex items-center gap-3">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">
+                                                    {group._count.users} Stagiaires • {group._count.modules} Modules
+                                                </p>
+                                                {group.averageProgress !== undefined && (
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-20 h-1 bg-white/5 rounded-full overflow-hidden">
+                                                            <div 
+                                                                className="h-full bg-[#00f2ff] shadow-[0_0_10px_rgba(0,242,255,0.5)] transition-all duration-1000"
+                                                                style={{ width: `${group.averageProgress}%` }}
+                                                            />
+                                                        </div>
+                                                        <span className="text-[9px] font-black text-[#00f2ff]">{group.averageProgress}%</span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                     
@@ -328,7 +344,15 @@ export default function StagiairesClient({
                                                     </div>
                                                     <div className="overflow-hidden pr-16 flex-1">
                                                         <p className="text-xs font-bold text-white truncate">{u.name || "Inconnu"}</p>
-                                                        <p className="text-[9px] text-white/30 truncate uppercase">{u.email}</p>
+                                                        <div className="flex items-center gap-2">
+                                                            <p className="text-[9px] text-white/30 truncate uppercase tracking-tighter">{u.email}</p>
+                                                            {u.averageProgress !== undefined && (
+                                                                <>
+                                                                    <span className="text-[9px] text-white/10">•</span>
+                                                                    <span className="text-[9px] font-black text-[#00f2ff]">{u.averageProgress}%</span>
+                                                                </>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                     <div className="absolute right-2 flex items-center gap-1 transition-all">
                                                       <button 
@@ -442,7 +466,12 @@ export default function StagiairesClient({
                         <div key={student.id} className="py-4 flex items-center justify-between group/wait">
                             <div className="max-w-[120px]">
                                 <p className="font-bold text-white text-sm truncate">{student.name}</p>
-                                <p className="text-[10px] text-white/30 uppercase font-medium truncate">{student.email}</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-[10px] text-white/30 uppercase font-medium truncate">{student.email}</p>
+                                    {student.averageProgress !== undefined && (
+                                        <span className="text-[9px] font-black text-[#fbbf24]">{student.averageProgress}%</span>
+                                    )}
+                                </div>
                             </div>
                             <div className="flex items-center gap-2">
                               <button 

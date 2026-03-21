@@ -1,20 +1,20 @@
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const assignPrisma = new PrismaClient();
 
 async function main() {
   try {
     // 1. Trouver ou créer le groupe "Général"
-    let group = await prisma.group.findFirst({
+    let group = await assignPrisma.group.findFirst({
       where: { name: 'Général' }
     });
     
     if (!group) {
-        group = await prisma.group.findFirst();
+        group = await assignPrisma.group.findFirst();
     }
 
     if (!group) {
       console.log("Création du groupe Général...");
-      group = await prisma.group.create({
+      group = await assignPrisma.group.create({
         data: { name: 'Général' }
       });
     }
@@ -23,12 +23,12 @@ async function main() {
 
     // 2. Assigner l'utilisateur
     const userEmail = 'davidroujet@gmail.com';
-    const user = await prisma.user.findUnique({
+    const user = await assignPrisma.user.findUnique({
       where: { email: userEmail }
     });
 
     if (user) {
-      const updatedUser = await prisma.user.update({
+      const updatedUser = await assignPrisma.user.update({
         where: { id: user.id },
         data: { groupId: group.id }
       });
@@ -38,31 +38,39 @@ async function main() {
     }
 
     // 3. Vérifier les modules
-    const modules = await prisma.module.findMany({
-      where: { groupId: group.id }
+    const groupModules = await assignPrisma.groupModule.findMany({
+      where: { groupId: group.id },
+      include: { module: true }
     });
     
-    console.log(`\nModules liés à ce groupe (${modules.length}) :`);
-    modules.forEach((m: any) => console.log(`- ${m.title}`));
+    console.log(`\nModules liés à ce groupe (${groupModules.length}) :`);
+    groupModules.forEach((gm: any) => console.log(`- ${gm.module.title}`));
 
-    // Optionnel : lier les modules orphelins
-    const orphanModules = await prisma.module.findMany({
-      where: { groupId: null }
+    // Optionnel : lier les modules orphelins (ceux qui ne sont dans aucun groupe)
+    const allModules = await assignPrisma.module.findMany({
+      include: { groupModules: true }
     });
+    
+    const orphanModules = allModules.filter((m: any) => m.groupModules.length === 0);
 
     if (orphanModules.length > 0) {
         console.log(`\nLiaison de ${orphanModules.length} modules orphelins au groupe ${group.name}...`);
-        await prisma.module.updateMany({
-            where: { groupId: null },
-            data: { groupId: group.id }
-        });
+        for (const m of orphanModules) {
+          await assignPrisma.groupModule.create({
+            data: {
+              groupId: group.id,
+              moduleId: m.id,
+              order: 0
+            }
+          });
+        }
         console.log("✅ Modules orphelins réassignés.");
     }
 
   } catch (err) {
     console.error("Erreur durant l'exécution :", err);
   } finally {
-    await prisma.$disconnect();
+    await assignPrisma.$disconnect();
   }
 }
 

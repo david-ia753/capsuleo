@@ -3,21 +3,27 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { generateVignette } from "@/lib/vignette";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const session = await auth();
   if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "TRAINER")) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 401 });
   }
 
+  const { searchParams } = new URL(request.url);
+  const filter = searchParams.get("filter");
   const isTrainer = session.user.role === "TRAINER";
   const userId = session.user.id;
 
   try {
+    const where: any = {};
+    if (filter === "mine") {
+      where.creatorId = userId;
+    }
     const modules = await prisma.module.findMany({
-      where: isTrainer ? { creatorId: userId } : {},
-      orderBy: {
-        createdAt: "desc"
-      },
+      where,
+      orderBy: [
+        { createdAt: 'desc' }
+      ],
       include: {
         _count: {
           select: {
@@ -26,16 +32,25 @@ export async function GET() {
             fiches: true
           }
         },
-        groups: {
-          select: {
-            id: true,
-            name: true
+        groupModules: {
+          include: {
+            group: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
           }
         },
         files: {
           select: {
             mimeType: true,
             originalName: true
+          }
+        },
+        creator: {
+          select: {
+            name: true
           }
         }
       }
@@ -90,7 +105,11 @@ export async function POST(request: NextRequest) {
     // Génération automatique de la vignette si non fournie
     const finalThumbnailUrl = thumbnailUrl || generateVignette(title);
 
-    // 1. Création du Module final
+    // Vérification de sécurité pour creatorId
+    const currentUserId = session.user.id;
+    let finalCreatorId = currentUserId;
+    
+    // 1. Création du Module final avec relation explicite GroupModule
     const module = await prisma.module.create({
       data: {
         title,
@@ -98,9 +117,12 @@ export async function POST(request: NextRequest) {
         description,
         shortDescription,
         thumbnailUrl: finalThumbnailUrl,
-        creatorId: session.user.id,
-        groups: {
-          connect: { id: finalGroupId }
+        creatorId: finalCreatorId,
+        groupModules: {
+          create: {
+            group: { connect: { id: finalGroupId } },
+            order: 0
+          }
         },
         exercises: {
           create: (exercises || []).map((ex: any, index: number) => ({
@@ -128,8 +150,54 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, moduleId: module.id });
 
+  } catch (error: any) {
+    const fs = require("fs");
+    fs.appendFileSync("api_debug.log", `[CREATE ERROR] ${error?.message || error}\n${error?.stack || ""}\n`);
+    console.error("DEBUG MODULE CREATE ERROR:", error?.message || error);
+    if (error?.code) {
+      console.error("PRISMA ERROR CODE:", error.code);
+    }
+    console.dir(error, { depth: null });
+    return NextResponse.json({ error: "Erreur serveur", details: error?.message }, { status: 500 });
+  }
+}
+
+/**
+ * Mise à jour de l'ordre des modules (Réorganisation)
+ */
+export async function PATCH(request: NextRequest) {
+  const session = await auth();
+  if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "TRAINER")) {
+    return NextResponse.json({ error: "Accès refusé" }, { status: 401 });
+  }
+
+  try {
+    const { orders, groupId } = await request.json(); // Array of { id: string, order: number }, optional groupId
+
+    if (!orders || !Array.isArray(orders)) {
+      return NextResponse.json({ error: "Données invalides" }, { status: 400 });
+    }
+
+    if (groupId) {
+      // Mise à jour de l'ordre par groupe
+      await prisma.$transaction(
+        orders.map((item: { id: string, order: number }) => 
+          prisma.groupModule.update({
+            where: {
+              groupId_moduleId: {
+                groupId,
+                moduleId: item.id
+              }
+            },
+            data: { order: item.order }
+          })
+        )
+      );
+    }
+
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Erreur Finalisation Module:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    console.error("Error reordering modules:", error);
+    return NextResponse.json({ error: "Erreur lors de la réorganisation" }, { status: 500 });
   }
 }

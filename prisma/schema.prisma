@@ -1,5 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  engineType      = "library"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -13,10 +15,13 @@ model User {
   emailVerified DateTime?
   image         String?
   role          Role              @default(STUDENT)
+  status        UserStatus        @default(PENDING)
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   trainerId     String?
   groupId       String?
+  firstName     String?
+  lastName      String?
   password      String?
   accounts      Account[]
   fileProgress  FileProgress[]
@@ -79,7 +84,7 @@ model Group {
   updatedAt   DateTime @updatedAt
   trainer     User?    @relation("GroupTrainer", fields: [trainerId], references: [id])
   users       User[]
-  modules     Module[] @relation("GroupModules")
+  groupModules GroupModule[]
 }
 
 model Module {
@@ -90,7 +95,6 @@ model Module {
   shortDescription String?
   thumbnailUrl     String?
   contentType      ContentType    @default(TEXT)
-  order            Int            @default(0)
   creatorId        String?
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
@@ -98,10 +102,23 @@ model Module {
   exercises        Exercise[]
   fiches           Fiche[]
   files            UploadedFile[]
-  groups           Group[]        @relation("GroupModules")
+  groupModules     GroupModule[]
 
-  @@index([order])
   @@index([creatorId])
+}
+
+model GroupModule {
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId  String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@id([groupId, moduleId])
+  @@index([groupId])
+  @@index([moduleId])
+  @@index([order])
 }
 
 model Fiche {
@@ -216,6 +233,12 @@ enum Role {
   ADMIN
   TRAINER
   STUDENT
+}
+
+enum UserStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum ContentType {

@@ -12,15 +12,18 @@ import {
   User, 
   Settings,
   LogOut,
-  LayoutGrid
+  LayoutGrid,
+  ShieldCheck
 } from "lucide-react";
 
 interface SidebarProps {
   session: any;
   role: "ADMIN" | "STUDENT" | "TRAINER";
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export function Sidebar({ session, role }: SidebarProps) {
+export function Sidebar({ session, role, isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
   const userName = session?.user?.name || session?.user?.email || "Utilisateur";
   const initials = userName.slice(0, 2).toUpperCase();
@@ -30,28 +33,38 @@ export function Sidebar({ session, role }: SidebarProps) {
   const isStudent = role === "STUDENT";
 
   return (
-    <aside 
-      className="admin-sidebar"
-      style={{
-        width: "280px",
-        minWidth: "280px",
-        height: "100vh",
-        position: "fixed",
-        left: 0,
-        top: 0,
-        display: "flex",
-        flexDirection: "column",
-        padding: "20px 24px 0px 24px",
-        zIndex: 1000,
-        backgroundColor: "rgba(11, 17, 32, 0.6)", // Contrast renforcé
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        borderRight: "1px solid rgba(255, 255, 255, 0.1)",
-        overflow: "hidden", 
-      }}
-    >
-      {/* Brand - Scaled down */}
-      <div className="sidebar-brand mb-2 flex items-center gap-4 scale-90 origin-left">
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[950] lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      <aside 
+        className={`cap-sidebar-container no-scrollbar transition-transform duration-300 z-[1000] lg:translate-x-0 ${
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+        style={{
+          width: "280px",
+          minWidth: "280px",
+          height: "100vh",
+          position: "fixed",
+          left: 0,
+          top: 0,
+          display: "flex",
+          flexDirection: "column",
+          padding: "24px 20px",
+          backgroundColor: "rgba(11, 17, 32, 0.95)", // More opaque on mobile for better contrast
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          borderRight: "1px solid rgba(255, 255, 255, 0.1)",
+          overflowY: "auto", 
+        }}
+      >
+      {/* 1. Zone Marque - Taille Naturelle */}
+      <div className="cap-sidebar-brand flex items-center gap-4 scale-[0.95] origin-left mb-8">
         <div 
           style={{
             width: "48px",
@@ -70,60 +83,65 @@ export function Sidebar({ session, role }: SidebarProps) {
             <circle cx="24" cy="17" r="2" fill="#020617"/>
           </svg>
         </div>
-        <div className="sidebar-brand-text">
+        <div className="cap-sidebar-text">
           <h2 
             style={{ 
-              fontSize: "28px", 
+              fontSize: "24px", 
               fontWeight: "900", 
               background: "linear-gradient(to bottom, #132E53, #0070FF)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               margin: 0,
-              textShadow: "0.5px 0.5px 0px rgba(255, 255, 255, 0.3)"
+              textShadow: "0.5px 0.5px 0px rgba(255, 255, 255, 0.3)",
+              lineHeight: "1"
             }}
           >
             Capsuléo
           </h2>
-          <span style={{ fontSize: "10px", fontWeight: "800", color: "#fbbf24", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+          <span style={{ fontSize: "9px", fontWeight: "800", color: "#fbbf24", letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginTop: "2px" }}>
             {isAdmin ? "Administration" : isTrainer ? "Formateur" : "STAGIAIRE"}
           </span>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex flex-col gap-0 pr-2">
-        <span className="text-[10px] font-bold uppercase tracking-widest ml-4 mb-0.5 block" style={{ color: "#fbbf24" }}>Principal</span>
+      {/* 2. Zone Navigation - Répartie */}
+      <nav className="flex flex-col gap-1 pr-1">
+        {/* Groupe Principal */}
+        <div className="flex flex-col gap-1">
+          <span className="text-[9px] font-bold uppercase tracking-widest ml-4 mb-2 block" style={{ color: "#fbbf24", opacity: 0.8 }}>Principal</span>
 
-        {!isStudent ? (
-          <>
-            <SidebarLink
-              href={isAdmin ? "/admin/dashboard" : "/dashboard"}
-              label="Tableau de bord"
-              id="nav-dashboard"
-              icon={<LayoutDashboard size={18} />}
-            />
-            {(isAdmin || isTrainer) && (
+          {!isStudent ? (
+            <>
               <SidebarLink
-                href="/admin/upload"
-                label="Génération IA"
-                id="nav-upload"
-                icon={<Upload size={18} />}
+                href={isAdmin ? "/admin/dashboard" : "/dashboard"}
+                label="Tableau de bord"
+                id="nav-dashboard"
+                icon={<LayoutDashboard size={18} />}
               />
-            )}
-          </>
-        ) : (
-          <SidebarLink
-            href="/catalogue"
-            label="Catalogue"
-            id="nav-catalogue"
-            icon={<LayoutGrid size={18} />}
-          />
-        )}
+              {(isAdmin || isTrainer) && (
+                <SidebarLink
+                  href="/admin/upload"
+                  label="Génération IA"
+                  id="nav-upload"
+                  icon={<Upload size={18} />}
+                />
+              )}
+            </>
+          ) : (
+            <SidebarLink
+              href="/catalogue"
+              label="Catalogue"
+              id="nav-catalogue"
+              icon={<LayoutGrid size={18} />}
+            />
+          )}
+        </div>
 
-        <span className="text-[10px] font-bold uppercase tracking-widest ml-4 mb-0.5 mt-1 block" style={{ color: "#fbbf24" }}>Gestion</span>
-
-        {!isStudent ? (
-          <>
+        {/* Groupe Gestion - Espacé mt-10 */}
+        {!isStudent && (
+          <div className="flex flex-col gap-1 mt-10">
+            <span className="text-[9px] font-bold uppercase tracking-widest ml-4 mb-2 block" style={{ color: "#fbbf24", opacity: 0.8 }}>Gestion</span>
+            
             <SidebarLink
               href="/admin/groups"
               label="Gestion Groupes"
@@ -137,9 +155,15 @@ export function Sidebar({ session, role }: SidebarProps) {
               icon={<Users size={18} />}
             />
             <SidebarLink
-              href="/admin/modules"
-              label="Suivi module"
-              id="nav-modules"
+              href="/admin/modules?filter=mine"
+              label="Mes Modules"
+              id="nav-my-modules"
+              icon={<User size={18} />}
+            />
+            <SidebarLink
+              href="/admin/modules?filter=all"
+              label="Bibliothèque"
+              id="nav-all-modules"
               icon={<Library size={18} />}
             />
             {isAdmin && (
@@ -150,53 +174,40 @@ export function Sidebar({ session, role }: SidebarProps) {
                 icon={<Users size={18} />}
               />
             )}
-          </>
-        ) : (
-          <>
-            <SidebarLink
-              href="/profile"
-              label="Mon Profil"
-              id="nav-profile-student"
-              icon={<User size={18} />}
-            />
-            <SidebarLink
-              href="/settings"
-              label="Paramètres"
-              id="nav-settings-student"
-              icon={<Settings size={18} />}
-            />
-          </>
+            {isAdmin && (
+              <SidebarLink
+                href="/admin/approvals"
+                label="Validation"
+                id="nav-approvals"
+                icon={<ShieldCheck size={18} />}
+              />
+            )}
+          </div>
         )}
+
+        {/* Groupe Compte - Espacé mt-10 */}
+        <div className="flex flex-col gap-1 mt-10">
+           <span className="text-[9px] font-bold uppercase tracking-widest ml-4 mb-2 block" style={{ color: "#fbbf24", opacity: 0.6 }}>Compte</span>
+           <SidebarLink
+             href={isStudent ? "/profile" : "/admin/profile"}
+             label="Mon Profil"
+             id="nav-profile"
+             icon={<User size={18} />}
+           />
+           <SidebarLink
+             href={isStudent ? "/settings" : "/admin/settings"}
+             label="Paramètres"
+             id="nav-settings"
+             icon={<Settings size={18} />}
+           />
+        </div>
       </nav>
 
-      {/* Bottom Section: Profile Block */}
-      <div className="mt-auto pt-4 border-t border-white/10 space-y-1">
-        <span className="text-[10px] font-bold uppercase tracking-widest ml-4 mb-0.5 block" style={{ color: "#fbbf24" }}>MON ESPACE</span>
-        
-        {!isStudent && (
-          <>
-            <SidebarLink
-              href="/admin/profile"
-              label="Mon Profil"
-              id="sidebar-profile-link"
-              icon={<User size={18} />}
-            />
-            <SidebarLink
-              href="/admin/settings"
-              label="Paramètres"
-              id="sidebar-settings-link"
-              icon={<Settings size={18} />}
-            />
-          </>
-        )}
-
+      {/* 3. Zone Profil (Bottom) - Espacée mt-auto */}
+      <div className="mt-auto pt-6 border-t border-white/10">
         <div 
-          className="flex items-center gap-3 p-4 rounded-2xl border border-white/10 mt-1 relative" 
-          style={{ 
-            backgroundColor: "rgba(255, 255, 255, 0.08)",
-            zIndex: 50,
-            marginBottom: "16px" 
-          }}
+          className="flex items-center gap-3 p-4 rounded-2xl border border-white/10" 
+          style={{ backgroundColor: "rgba(255, 255, 255, 0.08)" }}
         >
           <div 
             className="w-10 h-10 rounded-xl bg-safran flex items-center justify-center text-marine font-black text-sm"
@@ -206,7 +217,7 @@ export function Sidebar({ session, role }: SidebarProps) {
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="text-sm font-bold truncate" style={{ color: "#fbbf24" }}>
-                {userName.toLowerCase().includes('david') ? 'David' : userName.split(' ')[0]}
+                {session?.user?.firstName || (userName.toLowerCase().includes('david') ? 'David' : userName.split(' ')[0])}
             </p>
             <p className="text-[10px] uppercase tracking-tighter truncate" style={{ color: "#fbbf24", opacity: 0.8 }}>
               {isAdmin ? "ADMIN" : isTrainer ? "Formateur" : "STAGIAIRE"}
@@ -231,6 +242,7 @@ export function Sidebar({ session, role }: SidebarProps) {
           </linearGradient>
         </defs>
       </svg>
-    </aside>
+      </aside>
+    </>
   );
 }

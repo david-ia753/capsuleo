@@ -7,11 +7,11 @@ export default async function UploadPage() {
   });
 
   return (
-    <div className="w-full px-10 py-8 lg:px-20 lg:py-12">
+    <div className="w-full">
       <header className="mb-12">
-        <h1 className="text-xl font-bold text-[#FFC800] uppercase tracking-[0.3em] mb-2">Catalogue</h1>
-        <h2 className="catalog-title text-4xl font-black text-white">Création & IA</h2>
-        <p className="text-white/50 text-lg font-medium max-w-2xl mt-4">
+        <h1 className="text-4xl font-black text-[#FFC800] uppercase tracking-[0.05em] mb-2">Catalogue</h1>
+        <h2 className="text-xl font-bold text-white/50">Formation</h2>
+        <p className="text-white/30 text-lg font-medium max-w-2xl mt-4 italic">
           Importez vos supports bruts (PDF, Audio MP4/M4A). Notre IA se charge de structurer le cours, d'extraire les objectifs et de générer les évaluations interactives.
         </p>
       </header>

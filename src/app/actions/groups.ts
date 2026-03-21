@@ -1,8 +1,10 @@
 "use server";
+// Version: 1.0.1 - Force recompile
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
+import { getStudentGlobalProgression } from "./progress";
 
 /**
  * Créer un nouveau groupe de formation
@@ -31,144 +33,75 @@ export async function createGroup(formData: FormData) {
 }
 
 /**
- * Récupérer toutes les données pour la gestion des stagiaires (filtré par trainerId si fourni)
- */
-export async function getAdminStagiairesData(trainerId?: string) {
-  try {
-    const whereClause = trainerId ? { trainerId } : {};
-
-    // 1. On récupère les groupes et les utilisateurs
-    const groupsRaw = await prisma.group.findMany({
-      where: whereClause,
-      include: {
-        _count: {
-          select: { users: true }
-        },
-        users: {
-          select: { id: true, name: true, email: true }
-        }
-      },
-      orderBy: { createdAt: "desc" }
-    });
-
-    // 2. Pour chaque groupe, on compte les modules manuellement via la table de liaison
-    const groups = await Promise.all(groupsRaw.map(async (group) => {
-      const moduleCount = await prisma.module.count({
-        where: {
-          groups: {
-            some: { id: group.id }
-          }
-        }
-      });
-
-      return {
-        ...group,
-        _count: {
-          users: group._count.users,
-          modules: moduleCount
-        }
-      };
-    }));
-
-    const independentStudents = await prisma.user.findMany({
-      where: { 
-        role: "STUDENT",
-        groupId: null,
-        ...(trainerId ? { trainerId } : {})
-      },
-      orderBy: { name: "asc" }
-    });
-
-    // Si on est en mode Trainer, on ne propose que SES modules dans la bibliothèque de groupe
-    const allModules = await prisma.module.findMany({
-      where: trainerId ? { creatorId: trainerId } : {},
-      select: { id: true, title: true },
-      orderBy: { title: "asc" }
-    });
-
-    return { groups, independentStudents, allModules };
-  } catch (error) {
-    console.error("Erreur fetching stagiaires data:", error);
-    return { groups: [], independentStudents: [], allModules: [] };
-  }
-}
-
-/**
- * Récupérer la liste globale de tous les stagiaires (Admin)
- */
-export async function getGlobalStudentsData() {
-  try {
-    const students = await prisma.user.findMany({
-      where: { role: "STUDENT" },
-      include: {
-        group: { select: { id: true, name: true } },
-        trainer: { select: { id: true, name: true } }
-      },
-      orderBy: { createdAt: "desc" }
-    });
-    return students;
-  } catch (error) {
-    console.error("Erreur fetching global students data:", error);
-    return [];
-  }
-}
-
-/**
- * Assigner des modules à un groupe (Library Style)
+ * Assigner des modules à un groupe (Via GroupModule)
  */
 export async function assignModulesToGroup(groupId: string, moduleIds: string[]) {
   try {
-    // On met à jour les relations du groupe
-    const result = await prisma.group.update({
-      where: { id: groupId },
-      data: {
-        modules: {
-          set: moduleIds.map(id => ({ id }))
-        }
-      }
+    // 1. Supprimer les anciennes relations
+    await prisma.groupModule.deleteMany({
+      where: { groupId }
     });
 
-    // On force la revalidation de plusieurs chemins pour être sûr
+    // 2. Créer les nouvelles relations avec un ordre par défaut (0)
+    if (moduleIds.length > 0) {
+      await prisma.groupModule.createMany({
+        data: moduleIds.map((moduleId, index) => ({
+          groupId,
+          moduleId,
+          order: index
+        }))
+      });
+    }
+
     revalidatePath("/admin/stagiaires");
     revalidatePath("/admin/dashboard");
     revalidatePath("/catalogue");
     
     return { success: true };
   } catch (error) {
+    console.error("assignModulesToGroup error:", error);
     return { error: "Erreur lors de l'assignation des modules." };
   }
 }
 
 /**
- * Assigner un stagiaire à un groupe
+ * Réorganiser les modules au sein d'un groupe
  */
-export async function updateStudentGroup(studentId: string, groupId: string | null) {
+export async function reorderGroupModules(groupId: string, moduleIds: string[]) {
   try {
-    await prisma.user.update({
-      where: { id: studentId },
-      data: { groupId }
-    });
+    // On met à jour l'ordre de chaque module pour ce groupe spécifiquement
+    const updates = moduleIds.map((id, index) => 
+      prisma.groupModule.update({
+        where: {
+          groupId_moduleId: {
+            groupId,
+            moduleId: id
+          }
+        },
+        data: { order: index }
+      })
+    );
+
+    await prisma.$transaction(updates);
     revalidatePath("/admin/stagiaires");
+    revalidatePath("/admin/modules");
     return { success: true };
   } catch (error) {
-    return { error: "Erreur lors de la mise à jour du groupe de l'élève." };
+    console.error("reorderGroupModules error:", error);
+    return { error: "Erreur lors de la réorganisation." };
   }
 }
 
 /**
- * Récupérer les ids des modules déjà assignés à un groupe
+ * Récupérer les ids des modules déjà assignés à un groupe (Via GroupModule)
  */
 export async function getGroupModuleIds(groupId: string) {
     try {
-        const modules = await prisma.module.findMany({
-            where: {
-                groups: {
-                    some: { id: groupId }
-                }
-            },
-            select: { id: true }
+        const modules = await prisma.groupModule.findMany({
+            where: { groupId },
+            select: { moduleId: true }
         });
-        return modules.map(m => m.id);
+        return modules.map((m: any) => m.moduleId);
     } catch (error) {
         console.error("Erreur getGroupModuleIds:", error);
         return [];
@@ -190,57 +123,17 @@ export async function assignTrainerToGroup(groupId: string, trainerId: string | 
     return { error: "Erreur lors de l'assignation du formateur au groupe." };
   }
 }
-
 /**
- * Assigner un formateur référent à un stagiaire
+ * Récupérer les groupes disponibles pour l'inscription
  */
-export async function updateStudentTrainer(studentId: string, trainerId: string | null) {
+export async function getAvailableGroups() {
   try {
-    await prisma.user.update({
-      where: { id: studentId },
-      data: { trainerId }
+    return await prisma.group.findMany({
+      select: { id: true, name: true },
+      orderBy: { name: "asc" }
     });
-    revalidatePath("/admin/stagiaires");
-    return { success: true };
   } catch (error) {
-    console.error("Erreur updateStudentTrainer:", error);
-    return { error: "Erreur lors de l'assignation du formateur référent." };
-  }
-}
-
-/**
- * Création ou ajout rapide d'un stagiaire à un groupe
- */
-export async function quickAddStudent(groupId: string, name: string, email: string, trainerId?: string) {
-  try {
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      await prisma.user.update({
-        where: { id: existing.id },
-        data: { 
-          groupId, 
-          role: "STUDENT",
-          ...(trainerId ? { trainerId } : {})
-        }
-      });
-    } else {
-      const tempPassword = await bcrypt.hash("Passe123!", 10);
-      await prisma.user.create({
-        data: {
-          name,
-          email,
-          password: tempPassword,
-          role: "STUDENT",
-          groupId,
-          trainerId: trainerId || null
-        }
-      });
-    }
-    revalidatePath("/admin/groups");
-    revalidatePath("/admin/stagiaires");
-    return { success: true };
-  } catch (error) {
-    console.error("quickAddStudent error:", error);
-    return { error: "Erreur lors de l'ajout du stagiaire." };
+    console.error("Erreur getAvailableGroups:", error);
+    return [];
   }
 }

@@ -11,14 +11,11 @@ export default async function ModulesPage() {
     redirect("/auth/signin");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { groupId: true },
-  });
+  const userRole = session.user.role;
+  const userGroupId = session.user.groupId;
+  const isStaff = userRole === "ADMIN" || userRole === "TRAINER";
 
-  const isStaff = session.user.role === "ADMIN" || session.user.role === "TRAINER";
-
-  if (!user?.groupId && !isStaff) {
+  if (!userGroupId && !isStaff) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center p-8 text-center text-white/50">
         <h2 className="text-2xl font-bold mb-4">Aucun groupe assigné</h2>
@@ -29,19 +26,36 @@ export default async function ModulesPage() {
 
   const modules = await prisma.module.findMany({
     where: isStaff ? {} : { 
-      groups: {
-        some: { id: user?.groupId || "" }
+      groupModules: {
+        some: { groupId: userGroupId || "" }
       }
     },
     include: {
       _count: {
         select: { files: true, exercises: true }
       },
+      groupModules: {
+        where: { groupId: userGroupId || "" },
+        select: { order: true }
+      },
       files: {
         select: {
           id: true,
           progress: {
             where: { userId: session.user.id }
+          }
+        }
+      } as any,
+      fiches: {
+        select: {
+          id: true,
+          exercises: {
+            select: {
+              id: true,
+              progress: {
+                where: { userId: session.user.id }
+              }
+            }
           }
         }
       } as any,
@@ -54,8 +68,16 @@ export default async function ModulesPage() {
         }
       } as any
     },
-    orderBy: { order: "asc" },
+    // Le tri sera fait manuellement après pour respecter l'ordre du groupe si applicable
+    orderBy: { createdAt: "desc" },
   });
+
+  // Si on est un stagiaire, on trie par l'ordre défini dans GroupModule
+  const sortedModules = !isStaff ? [...modules].sort((a, b) => {
+    const orderA = a.groupModules?.[0]?.order ?? 0;
+    const orderB = b.groupModules?.[0]?.order ?? 0;
+    return orderA - orderB;
+  }) : modules;
 
   if (modules.length === 0) {
     return (
@@ -83,13 +105,21 @@ export default async function ModulesPage() {
       </header>
 
       <div className="catalog-grid">
-        {modules.map((module: any) => {
+        {sortedModules.map((module: any) => {
           const { icon: Icon, colorClass } = getModuleStyle(module.title);
           
-          const totalItems = (module._count.files || 0) + (module._count.exercises || 0);
-          const completedFiles = module.files.filter((f: any) => f.progress?.[0]?.isCompleted).length;
-          const completedExercises = module.exercises.filter((e: any) => e.progress?.[0]?.isCompleted).length;
-          const totalCompleted = completedFiles + completedExercises;
+          const totalFiles = module._count.files || 0;
+          const moduleExercises = module.exercises || [];
+          const ficheExercises = (module.fiches || []).flatMap((f: any) => f.exercises || []);
+          
+          const totalExercisesCount = moduleExercises.length + ficheExercises.length;
+          const totalItems = totalFiles + totalExercisesCount;
+
+          const completedFilesCount = module.files.filter((f: any) => f.progress?.[0]?.isCompleted).length;
+          const completedModuleExCount = moduleExercises.filter((e: any) => e.progress?.[0]?.isCompleted).length;
+          const completedFicheExCount = ficheExercises.filter((e: any) => e.progress?.[0]?.isCompleted).length;
+          
+          const totalCompleted = completedFilesCount + completedModuleExCount + completedFicheExCount;
           
           const progress = totalItems > 0 ? Math.round((totalCompleted / totalItems) * 100) : 0;
 

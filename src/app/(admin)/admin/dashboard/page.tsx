@@ -30,7 +30,7 @@ export default async function DashboardPage() {
 
   const modulesRaw = await prisma.module.findMany({
     include: { 
-      groups: { select: { id: true } },
+      groupModules: { select: { groupId: true } },
       files: { select: { id: true } },
       exercises: { select: { id: true } }
     }
@@ -41,7 +41,7 @@ export default async function DashboardPage() {
   // 2. Traitement des statistiques
   const studentsDetails = studentsRaw.map(student => {
     const studentModules = student.groupId 
-      ? modulesRaw.filter(m => m.groups.some(g => g.id === student.groupId))
+      ? modulesRaw.filter(m => m.groupModules.some(gm => gm.groupId === student.groupId))
       : [];
     
     // Total d'items à "consommer" pour ce stagiaire

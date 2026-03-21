@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 import TrainerDashboardClient from "./DashboardClient";
 
 export default async function TrainerDashboardPage() {
@@ -25,10 +26,14 @@ export default async function TrainerDashboardPage() {
           fileProgress: true
         }
       },
-      modules: {
+      groupModules: {
         include: {
-          files: true,
-          exercises: true
+          module: {
+            include: {
+              files: true,
+              exercises: true
+            }
+          }
         }
       }
     }
@@ -45,7 +50,10 @@ export default async function TrainerDashboardPage() {
       let itemsTotal = 0;
       let itemsDone = 0;
   
-      group.modules.forEach((mod: any) => {
+      group.groupModules.forEach((gm: any) => {
+        const mod = gm.module;
+        if (!mod) return;
+        
         modulesCount.add(mod.id);
         const fIds = mod.files.map((f: any) => f.id);
         const eIds = mod.exercises.map((e: any) => e.id);

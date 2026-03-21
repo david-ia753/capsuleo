@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { motion } from "framer-motion";
 
 interface InteractiveRowProps {
   children: React.ReactNode;
@@ -13,25 +14,23 @@ export function InteractiveRow({
   className = "", 
   onClick 
 }: InteractiveRowProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
-    <tr
-      className={`${className} transition-all duration-300`}
-      style={{
-        cursor: "pointer",
-        backgroundColor: isHovered ? "rgba(0, 242, 255, 0.05)" : "transparent",
-        transform: isHovered ? "translateY(-4px) scale(1.002)" : "none",
-        borderLeft: isHovered ? "4px solid #00f2ff" : "4px solid transparent",
-        boxShadow: isHovered ? "0 10px 30px rgba(0,0,0,0.3), 0 0 15px rgba(0, 242, 255, 0.2)" : "none",
-        zIndex: isHovered ? 10 : 1,
-        position: "relative",
+    <motion.tr
+      className={`${className} cursor-pointer relative z-10 border-l-4 border-transparent`}
+      whileHover={{ 
+        backgroundColor: "rgba(0, 112, 255, 0.05)",
+        x: 4,
+        borderLeftColor: "#0070FF",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.3), 0 0 15px rgba(0, 112, 255, 0.2)"
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      transition={{ 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 20 
+      }}
       onClick={onClick}
     >
       {children}
-    </tr>
+    </motion.tr>
   );
 }

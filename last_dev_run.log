@@ -1,0 +1,40 @@
+﻿
+> antigravity-learning@0.1.0 dev
+> next dev
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://172.16.9.19:3000
+- Environments: .env
+
+Ô£ô Starting...
+Ô£ô Ready in 1396ms
+>>> MIDDLEWARE START: /admin/modules
+>>> MIDDLEWARE PROTECTED: V├®rification de session pour /admin/modules
+>>> MIDDLEWARE SESSION FOUND: Role=ADMIN pour /admin/modules
+ GET /admin/modules 200 in 990ms (compile: 569ms, proxy.ts: 107ms, render: 315ms)
+>>> MIDDLEWARE START: /api/modules
+>>> MIDDLEWARE PROTECTED: V├®rification de session pour /api/modules
+>>> MIDDLEWARE SESSION FOUND: Role=ADMIN pour /api/modules
+prisma:query SELECT "public"."Module"."id", "public"."Module"."title", "public"."Module"."description", "public"."Module"."objective", "public"."Module"."shortDescription", "public"."Module"."thumbnailUrl", "public"."Module"."contentType"::text, "public"."Module"."order", "public"."Module"."creatorId", "public"."Module"."createdAt", "public"."Module"."updatedAt", COALESCE("aggr_selection_0_UploadedFile"."_aggr_count_files", 0) AS "_aggr_count_files", COALESCE("aggr_selection_1_Exercise"."_aggr_count_exercises", 0) AS "_aggr_count_exercises", COALESCE("aggr_selection_2_Fiche"."_aggr_count_fiches", 0) AS "_aggr_count_fiches" FROM "public"."Module" LEFT JOIN (SELECT "public"."UploadedFile"."moduleId", COUNT(*) AS "_aggr_count_files" FROM "public"."UploadedFile" WHERE 1=1 GROUP BY "public"."UploadedFile"."moduleId") AS "aggr_selection_0_UploadedFile" ON ("public"."Module"."id" = "aggr_selection_0_UploadedFile"."moduleId") LEFT JOIN (SELECT "public"."Exercise"."moduleId", COUNT(*) AS "_aggr_count_exercises" FROM "public"."Exercise" WHERE 1=1 GROUP BY "public"."Exercise"."moduleId") AS "aggr_selection_1_Exercise" ON ("public"."Module"."id" = "aggr_selection_1_Exercise"."moduleId") LEFT JOIN (SELECT "public"."Fiche"."moduleId", COUNT(*) AS "_aggr_count_fiches" FROM "public"."Fiche" WHERE 1=1 GROUP BY "public"."Fiche"."moduleId") AS "aggr_selection_2_Fiche" ON ("public"."Module"."id" = "aggr_selection_2_Fiche"."moduleId") WHERE 1=1 ORDER BY "public"."Module"."createdAt" DESC OFFSET $1
+prisma:query SELECT "public"."Group"."id", "public"."Group"."name", "t0"."B" AS "GroupModules@Module" FROM "public"."Group" INNER JOIN "public"."_GroupModules" AS "t0" ON "t0"."A" = "public"."Group"."id" WHERE (1=1 AND "t0"."B" IN (NULL)) OFFSET $1
+prisma:query SELECT "public"."UploadedFile"."id", "public"."UploadedFile"."mimeType", "public"."UploadedFile"."originalName", "public"."UploadedFile"."moduleId" FROM "public"."UploadedFile" WHERE "public"."UploadedFile"."moduleId" IN (NULL) OFFSET $1
+ GET /api/modules 200 in 1761ms (compile: 166ms, proxy.ts: 14ms, render: 1580ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 1137ms (compile: 1055ms, proxy.ts: 10ms, render: 72ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 109ms (compile: 52ms, proxy.ts: 22ms, render: 35ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 61ms (compile: 17ms, proxy.ts: 17ms, render: 27ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 83ms (compile: 27ms, proxy.ts: 11ms, render: 44ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 70ms (compile: 19ms, proxy.ts: 11ms, render: 41ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 71ms (compile: 17ms, proxy.ts: 29ms, render: 25ms)

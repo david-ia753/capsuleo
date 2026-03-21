@@ -160,98 +160,6 @@ body::after {
   width: 100%;
 }
 
-.admin-sidebar {
-  width: 280px !important;
-  min-width: 280px !important;
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  display: flex !important;
-  flex-direction: column !important;
-  padding: 40px 24px;
-  z-index: 100;
-}
-
-.sidebar-brand {
-  margin-bottom: 60px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.sidebar-brand-text h2 {
-  font-size: 20px;
-  font-weight: 800;
-  margin: 0;
-}
-
-.sidebar-nav {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 8px !important;
-  flex: 1;
-}
-
-.sidebar-section-title {
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--color-safran);
-  margin: 24px 0 12px 16px;
-}
-
-.sidebar-link {
-  display: flex !important;
-  align-items: center !important;
-  gap: 16px !important;
-  padding: 14px 18px !important;
-  border-radius: 16px !important;
-  color: var(--color-safran) !important;
-  font-weight: 600 !important;
-  transition: all 0.3s ease !important;
-  text-decoration: none !important;
-}
-
-.sidebar-link:hover, .sidebar-link.active {
-  background: rgba(255, 255, 255, 0.05) !important;
-}
-
-.sidebar-user {
-  margin-top: auto;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-user-avatar {
-  width: 40px;
-  height: 40px;
-  background: var(--color-safran);
-  color: var(--color-marine);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-}
-
-.sidebar-user-info p {
-  font-size: 14px;
-  font-weight: 700;
-  margin: 0;
-}
-
-.sidebar-user-info span {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.3);
-  font-weight: 600;
-  text-transform: uppercase;
-}
 
 .admin-content {
   flex: 1;
@@ -320,3 +228,21 @@ body::after {
 
 /* Injection CSS pour vérification forcée */
 * { --sidebar-bg: #0B1120 !important; }
+
+/* Masquage global et agressif des barres de défilement */
+.no-scrollbar, 
+.cap-sidebar-container, 
+.cap-sidebar-container *,
+main,
+body {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+.no-scrollbar::-webkit-scrollbar,
+.cap-sidebar-container::-webkit-scrollbar,
+.cap-sidebar-container *::-webkit-scrollbar,
+main::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none !important;
+}

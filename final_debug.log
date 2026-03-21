@@ -1,0 +1,84 @@
+﻿
+> antigravity-learning@0.1.0 dev
+> next dev
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.43:3000
+- Environments: .env
+
+Ô£ô Starting...
+Ô£ô Ready in 1964ms
+>>> MIDDLEWARE START: /
+>>> MIDDLEWARE PROTECTED: V├®rification de session pour /
+>>> MIDDLEWARE SESSION FOUND: Role=ADMIN pour /
+ GET / 307 in 2.6s (compile: 1710ms, proxy.ts: 183ms, render: 709ms)
+>>> MIDDLEWARE START: /admin/dashboard
+>>> MIDDLEWARE PROTECTED: V├®rification de session pour /admin/dashboard
+>>> MIDDLEWARE SESSION FOUND: Role=ADMIN pour /admin/dashboard
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."email", "public"."User"."emailVerified", "public"."User"."image", "public"."User"."role"::text, "public"."User"."createdAt", "public"."User"."updatedAt", "public"."User"."trainerId", "public"."User"."groupId", "public"."User"."password" FROM "public"."User" WHERE "public"."User"."role" = CAST($1::text AS "public"."Role") OFFSET $2
+prisma:query SELECT "public"."Group"."id", "public"."Group"."name", "public"."Group"."description", "public"."Group"."trainerId", "public"."Group"."createdAt", "public"."Group"."updatedAt" FROM "public"."Group" WHERE "public"."Group"."id" IN (NULL) OFFSET $1
+prisma:query SELECT "public"."FileProgress"."id", "public"."FileProgress"."isCompleted", "public"."FileProgress"."createdAt", "public"."FileProgress"."updatedAt", "public"."FileProgress"."userId", "public"."FileProgress"."fileId" FROM "public"."FileProgress" WHERE "public"."FileProgress"."userId" IN (NULL) OFFSET $1
+prisma:query SELECT "public"."StudentProgress"."id", "public"."StudentProgress"."isCompleted", "public"."StudentProgress"."score", "public"."StudentProgress"."attempts", "public"."StudentProgress"."lastAnswer", "public"."StudentProgress"."completedAt", "public"."StudentProgress"."createdAt", "public"."StudentProgress"."updatedAt", "public"."StudentProgress"."userId", "public"."StudentProgress"."exerciseId" FROM "public"."StudentProgress" WHERE "public"."StudentProgress"."userId" IN (NULL) OFFSET $1
+prisma:query SELECT "public"."Exercise"."id", "public"."Exercise"."type", "public"."Exercise"."question", "public"."Exercise"."options", "public"."Exercise"."answer", "public"."Exercise"."order", "public"."Exercise"."level", "public"."Exercise"."createdAt", "public"."Exercise"."updatedAt", "public"."Exercise"."ficheId", "public"."Exercise"."moduleId" FROM "public"."Exercise" WHERE "public"."Exercise"."id" IN (NULL) OFFSET $1
+prisma:query SELECT "public"."Fiche"."id", "public"."Fiche"."title", "public"."Fiche"."description", "public"."Fiche"."objective", "public"."Fiche"."content", "public"."Fiche"."part", "public"."Fiche"."order", "public"."Fiche"."createdAt", "public"."Fiche"."updatedAt", "public"."Fiche"."moduleId" FROM "public"."Fiche" WHERE "public"."Fiche"."id" IN (NULL) OFFSET $1
+prisma:query SELECT "public"."Module"."id", "public"."Module"."title", "public"."Module"."description", "public"."Module"."objective", "public"."Module"."shortDescription", "public"."Module"."thumbnailUrl", "public"."Module"."contentType"::text, "public"."Module"."order", "public"."Module"."creatorId", "public"."Module"."createdAt", "public"."Module"."updatedAt" FROM "public"."Module" WHERE 1=1 OFFSET $1
+prisma:query SELECT "public"."UploadedFile"."id", "public"."UploadedFile"."moduleId" FROM "public"."UploadedFile" WHERE "public"."UploadedFile"."moduleId" IN (NULL) OFFSET $1
+prisma:query SELECT "public"."Exercise"."id", "public"."Exercise"."moduleId" FROM "public"."Exercise" WHERE "public"."Exercise"."moduleId" IN (NULL) OFFSET $1
+prisma:query SELECT "public"."Group"."id", "t0"."B" AS "GroupModules@Module" FROM "public"."Group" INNER JOIN "public"."_GroupModules" AS "t0" ON "t0"."A" = "public"."Group"."id" WHERE (1=1 AND "t0"."B" IN (NULL)) OFFSET $1
+prisma:query SELECT "public"."Group"."id", "public"."Group"."name", "public"."Group"."description", "public"."Group"."trainerId", "public"."Group"."createdAt", "public"."Group"."updatedAt" FROM "public"."Group" WHERE 1=1 OFFSET $1
+ GET /admin/dashboard 200 in 3.3s (compile: 152ms, proxy.ts: 26ms, render: 3.2s)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 1848ms (compile: 1689ms, proxy.ts: 12ms, render: 148ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 282ms (compile: 109ms, proxy.ts: 26ms, render: 146ms)
+ GET /api/auth/session 200 in 254ms (compile: 47ms, proxy.ts: 111ms, render: 96ms)
+ GET /api/auth/session 200 in 271ms (compile: 55ms, proxy.ts: 111ms, render: 105ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 189ms (compile: 38ms, proxy.ts: 41ms, render: 110ms)
+ GET /api/auth/session 200 in 168ms (compile: 40ms, proxy.ts: 29ms, render: 99ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 117ms (compile: 61ms, proxy.ts: 10ms, render: 46ms)
+ GET /api/auth/session 200 in 119ms (compile: 64ms, proxy.ts: 13ms, render: 42ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 299ms (compile: 106ms, proxy.ts: 25ms, render: 169ms)
+ GET /api/auth/session 200 in 308ms (compile: 119ms, proxy.ts: 31ms, render: 158ms)
+ GET /api/auth/session 200 in 287ms (compile: 143ms, proxy.ts: 25ms, render: 119ms)
+ GET /api/auth/session 200 in 290ms (compile: 153ms, proxy.ts: 30ms, render: 106ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 133ms (compile: 54ms, proxy.ts: 8ms, render: 71ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 286ms (compile: 101ms, proxy.ts: 20ms, render: 164ms)
+ GET /api/auth/session 200 in 277ms (compile: 117ms, proxy.ts: 23ms, render: 137ms)
+ GET /api/auth/session 200 in 261ms (compile: 123ms, proxy.ts: 22ms, render: 117ms)
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+>>> MIDDLEWARE START: /api/auth/session
+>>> MIDDLEWARE API AUTH: /api/auth/session est autoris├®.
+ GET /api/auth/session 200 in 179ms (compile: 47ms, proxy.ts: 24ms, render: 109ms)
+ GET /api/auth/session 200 in 192ms (compile: 59ms, proxy.ts: 25ms, render: 108ms)

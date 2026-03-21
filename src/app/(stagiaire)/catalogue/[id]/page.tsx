@@ -26,10 +26,28 @@ export default async function ModulePage({
             where: { userId: session.user.id }
           }
         }
-      } as any,
-      fiches: { orderBy: { order: "asc" } },
-      groups: { select: { id: true } }
-    } as any,
+      },
+      exercises: {
+        include: {
+          progress: {
+            where: { userId: session.user.id }
+          }
+        }
+      },
+      fiches: {
+        orderBy: { order: "asc" },
+        include: {
+          exercises: {
+            include: {
+              progress: {
+                where: { userId: session.user.id }
+              }
+            }
+          }
+        }
+      },
+      groupModules: { select: { groupId: true } }
+    },
   });
 
   if (!moduleData) {
@@ -41,13 +59,11 @@ export default async function ModulePage({
     );
   }
 
-  // Vérifier si l'utilisateur a accès au groupe de ce module
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { groupId: true, role: true },
-  });
+  // Vérifier l'accès (ADMIN et TRAINER ont accès à tout, les autres par groupe)
+  const userRole = session.user.role;
+  const userGroupId = session.user.groupId;
 
-  const hasAccess = user?.role === "ADMIN" || user?.role === "TRAINER" || moduleData.groups.some(g => g.id === user?.groupId);
+  const hasAccess = userRole === "ADMIN" || userRole === "TRAINER" || moduleData.groupModules.some((gm: any) => gm.groupId === userGroupId);
 
   if (!hasAccess) {
     return (

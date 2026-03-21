@@ -15,7 +15,7 @@ import {
   AlertTriangle,
   Loader2
 } from "lucide-react";
-import { updateStudentGroup, updateStudentTrainer } from "@/app/actions/groups";
+import { updateStudentGroup, updateStudentTrainer } from "@/app/actions/students";
 
 interface Student {
   id: string;
@@ -23,6 +23,7 @@ interface Student {
   email: string | null;
   group: { id: string; name: string } | null;
   trainer: { id: string; name: string } | null;
+  averageProgress?: number;
 }
 
 interface Group {
@@ -127,6 +128,7 @@ export function StudentsListClient({
               <tr className="border-b border-white/5">
                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/20">Stagiaire</th>
                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/20">Groupe / Cohorte</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/20">Progression</th>
                 {isAdmin && <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/20">Formateur référent</th>}
                 <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-widest text-white/20">Actions</th>
               </tr>
@@ -164,6 +166,19 @@ export function StudentsListClient({
                           <option key={g.id} value={g.id} className="bg-[#0b1120]">{g.name.toUpperCase()}</option>
                         ))}
                       </select>
+                    </td>
+                    <td className="px-8 py-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-safran shadow-[0_0_10px_rgba(251,191,36,0.3)] transition-all duration-1000"
+                            style={{ width: `${student.averageProgress || 0}%` }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-black text-white/60">
+                          {student.averageProgress || 0}%
+                        </span>
+                      </div>
                     </td>
                     {isAdmin && (
                       <td className="px-8 py-5">

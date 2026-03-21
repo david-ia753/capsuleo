@@ -17,24 +17,22 @@ export function SidebarLink({ href, icon, label, id }: SidebarLinkProps) {
     <Link
       href={href}
       id={id}
-      className="sidebar-link transition-all"
+      className="cap-sidebar-link transition-all"
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "16px",
-        padding: "14px 18px",
-        borderRadius: "16px",
+        gap: "10px",
+        padding: "8px 16px",
+        borderRadius: "14px",
         color: isHovered ? "#fbbf24" : "#ffffff",
         opacity: 1,
-        fontWeight: "600",
         textDecoration: "none",
-        transform: isHovered ? "translateX(6px) scale(1.02)" : "translateX(0) scale(1)",
-        backgroundColor: isHovered ? "rgba(255, 255, 255, 0.05)" : "transparent",
-        boxShadow: isHovered ? "0 0 20px rgba(0, 242, 255, 0.15)" : "none",
+        fontSize: "14px",
+        backgroundColor: isHovered ? "rgba(255, 255, 255, 0.08)" : "transparent",
+        boxShadow: isHovered ? "0 0 15px rgba(0, 242, 255, 0.1)" : "none",
         borderWidth: "1px",
         borderStyle: "solid",
-        borderColor: isHovered ? "rgba(0, 242, 255, 0.5)" : "transparent",
-        textShadow: isHovered ? "0 0 10px rgba(251, 191, 36, 0.4)" : "none",
+        borderColor: isHovered ? "rgba(0, 242, 255, 0.4)" : "transparent",
         transition: "all 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
       }}
       onMouseEnter={() => setIsHovered(true)}

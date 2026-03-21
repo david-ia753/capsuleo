@@ -1,0 +1,298 @@
+Start API Log
+[CREATE ERROR] 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+    at Gr.handleRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:8286)
+    at Gr.handleAndLogRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7581)
+    at Gr.request (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7288)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:75:6730)
+    at async POST (C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:24)
+    at async AppRouteRouteModule.do (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:37866)
+    at async AppRouteRouteModule.handle (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:45156)
+    at async responseGenerator (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17154:38)
+    at async AppRouteRouteModule.handleResponse (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:1:191938)
+    at async handleResponse (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17217:32)
+    at async Module.handler (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17270:13)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1442:9)
+    at async DevServer.renderPageComponent (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1494:24)
+    at async DevServer.renderToResponseImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1544:32)
+    at async DevServer.pipeImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1038:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\antigravity-learning\node_modules\next\dist\server\next-server.js:395:17)
+    at async DevServer.handleRequestImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:929:17)
+    at async C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:387:20
+    at async Span.traceAsyncFn (C:\antigravity-learning\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:383:24)
+    at async invokeRender (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:248:21)
+    at async handleRequest (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:447:24)
+    at async requestHandlerImpl (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:496:13)
+    at async Server.requestListener (C:\antigravity-learning\node_modules\next\dist\server\lib\start-server.js:226:13)
+[CREATE ERROR] 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+    at Gr.handleRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:8286)
+    at Gr.handleAndLogRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7581)
+    at Gr.request (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7288)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:75:6730)
+    at async POST (C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:24)
+    at async AppRouteRouteModule.do (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:37866)
+    at async AppRouteRouteModule.handle (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:45156)
+    at async responseGenerator (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17154:38)
+    at async AppRouteRouteModule.handleResponse (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:1:191938)
+    at async handleResponse (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17217:32)
+    at async Module.handler (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17270:13)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1442:9)
+    at async DevServer.renderPageComponent (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1494:24)
+    at async DevServer.renderToResponseImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1544:32)
+    at async DevServer.pipeImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1038:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\antigravity-learning\node_modules\next\dist\server\next-server.js:395:17)
+    at async DevServer.handleRequestImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:929:17)
+    at async C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:387:20
+    at async Span.traceAsyncFn (C:\antigravity-learning\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:383:24)
+    at async invokeRender (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:248:21)
+    at async handleRequest (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:447:24)
+    at async requestHandlerImpl (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:496:13)
+    at async Server.requestListener (C:\antigravity-learning\node_modules\next\dist\server\lib\start-server.js:226:13)
+[AI ERROR] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+[CREATE ERROR] 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+    at Gr.handleRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:8286)
+    at Gr.handleAndLogRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7581)
+    at Gr.request (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7288)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:75:6730)
+    at async POST (C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:24)
+    at async AppRouteRouteModule.do (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:37866)
+    at async AppRouteRouteModule.handle (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:45156)
+    at async responseGenerator (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17154:38)
+    at async AppRouteRouteModule.handleResponse (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:1:191938)
+    at async handleResponse (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17217:32)
+    at async Module.handler (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17270:13)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1442:9)
+    at async DevServer.renderPageComponent (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1494:24)
+    at async DevServer.renderToResponseImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1544:32)
+    at async DevServer.pipeImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1038:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\antigravity-learning\node_modules\next\dist\server\next-server.js:395:17)
+    at async DevServer.handleRequestImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:929:17)
+    at async C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:387:20
+    at async Span.traceAsyncFn (C:\antigravity-learning\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:383:24)
+    at async invokeRender (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:248:21)
+    at async handleRequest (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:447:24)
+    at async requestHandlerImpl (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:496:13)
+    at async Server.requestListener (C:\antigravity-learning\node_modules\next\dist\server\lib\start-server.js:226:13)
+[AI ERROR] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+[AI ERROR] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+[AI ERROR] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+[AI REST FINAL ERROR] 404: {
+  "error": {
+    "code": 404,
+    "message": "models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+    "status": "NOT_FOUND"
+  }
+}
+
+[FINALIZE] Files: 3, Text length: 7680
+[AI REST FINAL ERROR] 404: {
+  "error": {
+    "code": 404,
+    "message": "models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+    "status": "NOT_FOUND"
+  }
+}
+
+[FINALIZE] Files: 3, Text length: 7680
+[AI REST FINAL ERROR] 404: {
+  "error": {
+    "code": 404,
+    "message": "models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+    "status": "NOT_FOUND"
+  }
+}
+
+[FINALIZE] Files: 3, Text length: 7680
+[AI REST FINAL ERROR] 404: {
+  "error": {
+    "code": 404,
+    "message": "models/gemini-1.5-flash is not found for API version v1, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+    "status": "NOT_FOUND"
+  }
+}
+
+[FINALIZE V1] Files: 3, Text length: 7680
+[FINALIZE V1] Files: 3, Text length: 7680
+[SDK ERROR] gemini-2.0-flash: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+Please retry in 13.662423285s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"13s"}]
+[CREATE ERROR] 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+    at Gr.handleRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:8286)
+    at Gr.handleAndLogRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7581)
+    at Gr.request (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7288)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:75:6730)
+    at async POST (C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:24)
+    at async AppRouteRouteModule.do (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:37866)
+    at async AppRouteRouteModule.handle (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:45156)
+    at async responseGenerator (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17154:38)
+    at async AppRouteRouteModule.handleResponse (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:1:191938)
+    at async handleResponse (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17217:32)
+    at async Module.handler (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17270:13)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1442:9)
+    at async DevServer.renderPageComponent (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1494:24)
+    at async DevServer.renderToResponseImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1544:32)
+    at async DevServer.pipeImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1038:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\antigravity-learning\node_modules\next\dist\server\next-server.js:395:17)
+    at async DevServer.handleRequestImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:929:17)
+    at async C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:387:20
+    at async Span.traceAsyncFn (C:\antigravity-learning\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:383:24)
+    at async invokeRender (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:248:21)
+    at async handleRequest (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:447:24)
+    at async requestHandlerImpl (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:496:13)
+    at async Server.requestListener (C:\antigravity-learning\node_modules\next\dist\server\lib\start-server.js:226:13)
+[CREATE ERROR] 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+PrismaClientKnownRequestError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create()` invocation in
+C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:166
+
+  429 // Génération automatique de la vignette si non fournie
+  430 const finalThumbnailUrl = thumbnailUrl || (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$vignette$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["generateVignette"])(title);
+  431 // 1. Création du Module final
+→ 432 const module = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].module.create(
+Foreign key constraint violated on the constraint: `Module_creatorId_fkey`
+    at Gr.handleRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:8286)
+    at Gr.handleAndLogRequestError (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7581)
+    at Gr.request (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:65:7288)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async a (C:\antigravity-learning\node_modules\@prisma\client\runtime\client.js:75:6730)
+    at async POST (C:\antigravity-learning\.next\dev\server\chunks\[root-of-the-server]__789d3496._.js:432:24)
+    at async AppRouteRouteModule.do (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:37866)
+    at async AppRouteRouteModule.handle (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:45156)
+    at async responseGenerator (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17154:38)
+    at async AppRouteRouteModule.handleResponse (C:\antigravity-learning\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:1:191938)
+    at async handleResponse (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17217:32)
+    at async Module.handler (C:\antigravity-learning\.next\dev\server\chunks\node_modules_next_c573592f._.js:17270:13)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1442:9)
+    at async DevServer.renderPageComponent (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1494:24)
+    at async DevServer.renderToResponseImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1544:32)
+    at async DevServer.pipeImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:1038:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\antigravity-learning\node_modules\next\dist\server\next-server.js:395:17)
+    at async DevServer.handleRequestImpl (C:\antigravity-learning\node_modules\next\dist\server\base-server.js:929:17)
+    at async C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:387:20
+    at async Span.traceAsyncFn (C:\antigravity-learning\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\antigravity-learning\node_modules\next\dist\server\dev\next-dev-server.js:383:24)
+    at async invokeRender (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:248:21)
+    at async handleRequest (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:447:24)
+    at async requestHandlerImpl (C:\antigravity-learning\node_modules\next\dist\server\lib\router-server.js:496:13)
+    at async Server.requestListener (C:\antigravity-learning\node_modules\next\dist\server\lib\start-server.js:226:13)
+[FINALIZE V1] Files: 3, Text length: 7680
+[SDK ERROR] gemini-2.0-flash: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+Please retry in 50.582034673s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"50s"}]
+[FINALIZE V1] Files: 3, Text length: 7354
+[SDK ERROR] gemini-2.0-flash: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+Please retry in 14.113819239s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"14s"}]
+[FINALIZE V1] Files: 3, Text length: 6688
+[SDK ERROR] gemini-2.0-flash: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+Please retry in 7.05606669s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"7s"}]
+[FINALIZE V1] Files: 3, Text length: 7304
+[SDK ERROR] gemini-2.0-flash: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+Please retry in 27.578365339s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"27s"}]
+[FINALIZE V1] Files: 3, Text length: 7680
+[SDK ERROR] gemini-2.0-flash: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+Please retry in 13.550516355s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"13s"}]
+[FINALIZE V1] Files: 3, Text length: 7354
+[SDK ERROR] gemini-2.0-flash: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+Please retry in 11.620592039s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"11s"}]
