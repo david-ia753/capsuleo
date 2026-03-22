@@ -77,6 +77,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 401 });
   }
 
+  let originalName = "Inconnu";
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
@@ -85,10 +86,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Fichier manquant ou invalide" }, { status: 400 });
     }
 
-    await mkdir(UPLOAD_DIR, { recursive: true });
-
-    const originalName = file.name;
+    originalName = file.name;
     const lowerName = originalName.toLowerCase();
+
+    await mkdir(UPLOAD_DIR, { recursive: true });
     
     // Détection de la catégorie
     let category = "AUTRE";
@@ -100,32 +101,20 @@ export async function POST(request: NextRequest) {
       category = "AUDIO";
     }
 
-    const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;
+    const filename = `${Date.now()}_${originalName.replace(/[^a-zA-Z0-9.]/g, "_")}`;
     const filepath = path.join(UPLOAD_DIR, filename);
     
-    // Sauvegarde par STREAM robuste
-    await new Promise(async (resolve, reject) => {
-      const writeStream = require("fs").createWriteStream(filepath);
-      const reader = file.stream().getReader();
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) {
-            writeStream.end();
-            break;
-          }
-          if (value) writeStream.write(Buffer.from(value));
-        }
-        writeStream.on('finish', resolve);
-        writeStream.on('error', reject);
-      } catch (err) {
-        writeStream.destroy();
-        reject(err);
-      }
-    });
+    // Sauvegarde robuste via writeFile
+    try {
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      await writeFile(filepath, buffer);
+    } catch (writeErr: any) {
+      console.error("ERREUR ECRITURE DISQUE:", writeErr);
+      throw new Error(`Erreur écriture disque: ${writeErr.message}`);
+    }
 
     // OPTIMISATION : On ne fait plus l'extraction lourde ici pour éviter les erreurs 500 (OOM)
-    // L'extraction sera faite séquentiellement dans la phase de finalisation si nécessaire.
     let extractedText = "";
     if (category === "AUDIO" || file.type?.startsWith("audio")) {
       extractedText = `Fichier audio: ${originalName}`;
@@ -134,7 +123,7 @@ export async function POST(request: NextRequest) {
     const uploadedFile = await prisma.uploadedFile.create({
       data: {
         filename,
-        originalName: file.name,
+        originalName,
         mimeType: file.type,
         size: file.size,
         category: category as any,
@@ -150,17 +139,18 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error("DÉTAIL ERREUR UPLOAD UNAIRE:", error);
+    console.error("DÉTAIL ERREUR UPLOAD:", error);
     
-    // Fail-safe logger pour Antigravity
     try {
-      const errorLog = `[${new Date().toISOString()}] ERREUR: ${error?.message || String(error)}\nSTACK: ${error?.stack}\n\n`;
-      require("fs").appendFileSync(path.join(process.cwd(), "debug_error.log"), errorLog);
+      const logPath = path.join(UPLOAD_DIR, "upload_errors.log");
+      const errorLog = `[${new Date().toISOString()}] Erreur sur ${originalName}: ${error?.message}\nSTACK: ${error?.stack}\n\n`;
+      require("fs").appendFileSync(logPath, errorLog);
     } catch (e) {}
 
     return NextResponse.json({ 
-      error: "Erreur lors de l'upload du fichier", 
-      details: error?.message || String(error)
+      error: "Erreur lors de l'upload", 
+      details: error?.message || String(error),
+      stack: process.env.NODE_ENV === "production" ? error?.stack : undefined
     }, { status: 500 });
   }
 }

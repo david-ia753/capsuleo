@@ -85,7 +85,10 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
         body: formData,
       });
 
-      if (!response.ok) throw new Error(`Échec (Code ${response.status})`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.details || errorData.error || `Échec (Code ${response.status})`);
+      }
 
       const result = await response.json();
       
@@ -93,7 +96,7 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
         prev.map((f) => (f.id === id ? { ...f, status: "done", progress: 100, serverId: result.fileId } : f))
       );
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Erreur";
+      const errorMsg = err instanceof Error ? err.message : "Erreur inconnue";
       setFiles((prev) =>
         prev.map((f) => (f.id === id ? { ...f, status: "error", error: errorMsg } : f))
       );
@@ -125,7 +128,10 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
           body: formData,
         });
 
-        if (!response.ok) throw new Error(`Échec (Code ${response.status})`);
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.details || errorData.error || `Échec (Code ${response.status})`);
+        }
 
         const result = await response.json();
         
@@ -135,11 +141,12 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
         fileItem.status = "done";
         fileItem.serverId = result.fileId;
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : "Erreur";
+        const errorMsg = err instanceof Error ? err.message : "Erreur inconnue";
         setFiles((prev) =>
           prev.map((f) => (f.id === fileItem.id ? { ...f, status: "error", error: errorMsg } : f))
         );
         hasErrors = true;
+        // On s'arrête au premier échec pour permettre le débug
         return;
       }
     }
