@@ -35,9 +35,10 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 
-# Set the correct permission for prerender cache and uploads
-RUN mkdir -p .next public/uploads
-RUN chown -R nextjs:nodejs .next public/uploads
+# Create storage directory and set permissions
+RUN mkdir -p /app/storage/uploads && \
+    chown -R nextjs:nodejs /app/storage /app/public && \
+    chmod -R 775 /app/storage /app/public
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
@@ -45,7 +46,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
-USER nextjs
+# USER nextjs
 
 EXPOSE 3000
 
