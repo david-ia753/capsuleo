@@ -7,10 +7,9 @@ import { revalidatePath } from "next/cache";
 export async function inviteMember(formData: FormData) {
   const email = formData.get("email") as string;
   
-  if (!email) return { error: "Email requis" };
+  const normalizedEmail = email.toLowerCase();
 
-    const normalizedEmail = email.toLowerCase();
-
+  try {
     // On crée une invitation
     await prisma.invitation.create({
       data: {
