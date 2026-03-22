@@ -84,6 +84,19 @@ ${limitedText || "Analyse ce module général."}`;
   return null;
 }
 
+/**
+ * Nettoie le texte pour éviter les caractères Unicode problématiques
+ */
+function cleanUnicode(str: string): string {
+  if (!str) return "";
+  return str
+    .replace(/[^\p{L}\p{N}\p{P}\p{Z}\n\r]/gu, "")
+    .replace(/\u0000/g, "")
+    .replace(/[\r\n]+/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "TRAINER")) {
@@ -127,7 +140,10 @@ export async function POST(request: NextRequest) {
             
             textToUse = await new Promise((resolve) => {
               pdfParser.on("pdfParser_dataError", () => resolve(""));
-              pdfParser.on("pdfParser_dataReady", () => resolve(pdfParser.getRawTextContent()));
+              pdfParser.on("pdfParser_dataReady", () => {
+                const rawText = pdfParser.getRawTextContent();
+                resolve(cleanUnicode(rawText));
+              });
               pdfParser.loadPDF(fullPath);
             });
           }

@@ -8,43 +8,9 @@ import path from "path";
 import { prisma } from "@/lib/prisma";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-/**
- * Nettoie le texte pour éviter les caractères Unicode problématiques pour le JSON ou l'IA
- */
-function cleanUnicode(str: string): string {
-  if (!str) return "";
-  return str
-    .replace(/[^\p{L}\p{N}\p{P}\p{Z}\n\r]/gu, "")
-    .replace(/\u0000/g, "")
-    .replace(/[\r\n]+/g, " ")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-}
 
-/**
- * Extrait le texte d'un PDF en utilisant pdf2json (plus stable sur serveur que pdf-parse)
- */
-async function extractTextFromFile(filepath: string, mimeType: string): Promise<string> {
-  if (mimeType === "application/pdf") {
-    return new Promise((resolve) => {
-      const PDFParser = require("pdf2json");
-      const pdfParser = new PDFParser(null, 1);
-
-      pdfParser.on("pdfParser_dataError", (errData: any) => {
-        console.error("Erreur pdf2json:", errData.parserError);
-        resolve("Document illisible ou extraction échouée.");
-      });
-
-      pdfParser.on("pdfParser_dataReady", () => {
-        const text = pdfParser.getRawTextContent();
-        resolve(cleanUnicode(text));
-      });
-
-      pdfParser.loadPDF(filepath);
-    });
-  }
-  return "Format non géré pour l'extraction automatique.";
-}
+// Les fonctions d'extraction et de nettoyage ont été déplacées vers le service de finalisation
+// pour optimiser la mémoire lors de l'upload initial.
 
 /**
  * Utilise Gemini pour générer les données pédagogiques du module (Quiz uniquement)
@@ -158,10 +124,10 @@ export async function POST(request: NextRequest) {
       }
     });
 
+    // OPTIMISATION : On ne fait plus l'extraction lourde ici pour éviter les erreurs 500 (OOM)
+    // L'extraction sera faite séquentiellement dans la phase de finalisation si nécessaire.
     let extractedText = "";
-    if (file.type === "application/pdf" || lowerName.endsWith(".pdf")) {
-      extractedText = await extractTextFromFile(filepath, file.type || "application/pdf");
-    } else if (category === "AUDIO" || file.type?.startsWith("audio")) {
+    if (category === "AUDIO" || file.type?.startsWith("audio")) {
       extractedText = `Fichier audio: ${originalName}`;
     }
 
