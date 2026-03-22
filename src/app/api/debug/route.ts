@@ -41,12 +41,28 @@ export async function GET(request: NextRequest) {
     results.api_debug = `Erreur lecture: ${e.message}`;
   }
 
-  // 3. Info environnement
+  // 3. Liste des modèles Gemini (pour diag 404)
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      const apiKey = process.env.GEMINI_API_KEY;
+      const resp = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        results.available_models = data.models?.map((m: any) => m.name) || "Aucun modèle trouvé";
+      } else {
+        results.available_models = `Erreur API: ${resp.status} - ${await resp.text()}`;
+      }
+    } catch (e: any) {
+      results.available_models = `Erreur fetch: ${e.message}`;
+    }
+  }
+
+  // 4. Info environnement
   results.env = {
     NODE_ENV: process.env.NODE_ENV,
-    USER: process.env.USER || "unknown",
     CWD: process.cwd(),
-    UPLOAD_DIR
+    UPLOAD_DIR,
+    API_KEY_LAST_4: process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.slice(-4) : "NONE"
   };
 
   return NextResponse.json(results);
