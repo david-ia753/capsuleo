@@ -8,7 +8,7 @@ export async function middleware(req: NextRequest) {
   console.log(`>>> MIDDLEWARE START: ${pathname}`);
 
   // Routes publiques — pas de protection
-  const publicRoutes = ["/auth/login", "/auth/error", "/register"];
+  const publicRoutes = ["/auth/login", "/auth/error", "/register", "/auth/setup-password"];
   
   if (publicRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
     console.log(`>>> MIDDLEWARE PUBLIC: ${pathname} est autorisé.`);

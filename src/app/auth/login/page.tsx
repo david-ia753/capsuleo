@@ -134,14 +134,6 @@ function LoginForm() {
               )}
             </button>
           </div>
-          <div className="flex justify-between items-center px-2 mt-2">
-            <Link 
-              href="/auth/setup-password"
-              className="text-[10px] text-[#00D1FF] hover:text-white transition-colors duration-300 font-bold uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-[#00D1FF]/40"
-            >
-              S&apos;inscrire / Première connexion ?
-            </Link>
-          </div>
         </div>
       </div>
 
@@ -170,11 +162,11 @@ function LoginForm() {
            )}
          </button>
 
-         <Link
-           href="/auth/signup"
-           className="block w-full py-4 text-center border border-white/10 rounded-2xl text-white/60 hover:text-white hover:bg-white/5 transition-all text-xs font-bold uppercase tracking-widest"
+         <Link 
+           href="/auth/setup-password"
+           className="block w-full py-4 text-center border border-white/10 rounded-2xl text-[#00D1FF] hover:text-white hover:bg-white/5 transition-all text-xs font-bold uppercase tracking-widest"
          >
-            Nouveau ? Demander un accès
+           S&apos;inscrire / Première connexion ?
          </Link>
        </div>
      </form>
