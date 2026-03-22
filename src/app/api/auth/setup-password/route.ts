@@ -10,14 +10,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email et mot de passe requis" }, { status: 400 });
     }
 
+    const normalizedEmail = email.toLowerCase();
+
     // On cherche l'utilisateur
     let user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     // On cherche une invitation si l'utilisateur n'existe pas
     const invitation = await prisma.invitation.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     // if (!user && !invitation) {

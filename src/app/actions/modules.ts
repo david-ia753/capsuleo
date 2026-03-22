@@ -15,11 +15,11 @@ export async function getMyModules() {
     });
   }
 
-  // Pour les stagiaires, on récupère les modules de leurs groupes
+  // Pour les stagiaires, on récupère les modules de leur groupe
   const user = await prisma.user.findUnique({
     where: { id: userId },
     include: {
-      groups: {
+      group: {
         include: {
           assignedModules: {
             include: {
@@ -34,15 +34,10 @@ export async function getMyModules() {
     }
   });
 
-  if (!user) return [];
+  if (!user || !user.group) return [];
 
-  // On extrait tous les modules des groupes de l'utilisateur
-  const modules = user.groups.flatMap(g => 
-    g.assignedModules.map(am => am.module)
-  );
+  // On extrait les modules du groupe de l'utilisateur
+  const modules = user.group.assignedModules.map(am => am.module);
 
-  // Déduplication (au cas où un module est dans plusieurs groupes)
-  const uniqueModules = Array.from(new Map(modules.map(m => [m.id, m])).values());
-
-  return uniqueModules;
+  return modules;
 }
