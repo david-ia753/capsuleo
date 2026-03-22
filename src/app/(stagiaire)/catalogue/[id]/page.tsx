@@ -15,6 +15,13 @@ export default async function ModulePage({
   }
 
   const { id } = await params;
+  
+  // LOG DIAGNOSTIC
+  const debugPath = process.env.NODE_ENV === "production" ? "/app/api_debug.log" : "api_debug.log";
+  try {
+    const fs = require("fs");
+    fs.appendFileSync(debugPath, `\n[CATALOGUE DEBUG] Hit for ID: ${id} at ${new Date().toISOString()}\n`);
+  } catch (e) {}
 
   // Récupération de toutes les données liées au module
   const moduleData = await prisma.module.findUnique({
@@ -49,6 +56,11 @@ export default async function ModulePage({
       groupModules: { select: { groupId: true } }
     },
   });
+
+  try {
+    const fs = require("fs");
+    fs.appendFileSync(debugPath, `[CATALOGUE DEBUG] moduleFound: ${!!moduleData}\n`);
+  } catch (e) {}
 
   if (!moduleData) {
     return (
