@@ -11,7 +11,7 @@ export default async function ModulePage({
   const session = await auth();
 
   if (!session?.user) {
-    redirect("/auth/signin");
+    redirect("/auth/login");
   }
 
   const { id } = await params;
@@ -87,7 +87,7 @@ export default async function ModulePage({
   }
 
   return (
-    <div className="w-full p-0 m-0 border-none outline-none">
+    <div className="w-full p-0 m-0 border-none outline-none content-flush">
       <ModuleViewer module={moduleData} />
     </div>
   );

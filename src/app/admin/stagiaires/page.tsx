@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+﻿import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getAdminStagiairesData, getGlobalStudentsData } from "@/app/actions/students";
 import { getTeamData } from "@/app/actions/equipe";
@@ -7,12 +7,12 @@ import { StudentsListClient } from "@/components/StudentsListClient";
 export default async function StagiairesPage() {
   const session = await auth();
   if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "TRAINER")) {
-    redirect("/auth/signin");
+    redirect("/auth/login");
   }
 
   const isAdmin = session.user.role === "ADMIN";
   
-  // 1. On récupère la liste des stagiaires
+  // 1. On rÃ©cupÃ¨re la liste des stagiaires
   let students = await getGlobalStudentsData();
   if (!isAdmin) {
     // Si formateur, on filtre uniquement SES stagiaires
@@ -49,3 +49,4 @@ export default async function StagiairesPage() {
     </div>
   );
 }
+

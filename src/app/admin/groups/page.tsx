@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+﻿import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getGroupModuleIds } from "@/app/actions/groups";
 import { getAdminStagiairesData } from "@/app/actions/students";
@@ -13,7 +13,7 @@ import { InteractiveElement } from "@/components/InteractiveElement";
 export default async function GroupsPage() {
   const session = await auth();
   if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "TRAINER")) {
-    redirect("/auth/signin");
+    redirect("/auth/login");
   }
 
   const isAdmin = session.user.role === "ADMIN";
@@ -42,7 +42,7 @@ export default async function GroupsPage() {
         </h2>
       </header>
 
-      {/* Gestion des Groupes et Stagiaires (Cohortes) en plein écran */}
+      {/* Gestion des Groupes et Stagiaires (Cohortes) en plein Ã©cran */}
       <div className="w-full">
         <StagiairesClient 
           initialGroups={groups as any} 
@@ -56,3 +56,4 @@ export default async function GroupsPage() {
     </div>
   );
 }
+

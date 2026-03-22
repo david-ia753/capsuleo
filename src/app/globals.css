@@ -152,20 +152,34 @@ body::after {
 .icon-ethique { color: #F87171; }
 .icon-general { color: #34D399; }
 
-/* ─── Layout Administration — Pixel Perfect ─── */
+/* ─── Layout Administration & Application — Pixel Perfect ─── */
 
-.admin-layout {
+.admin-layout, .app-layout {
   display: flex !important;
   min-height: 100vh;
   width: 100%;
 }
 
-
-.admin-content {
+.admin-content, .app-content {
   flex: 1;
-  padding: 0 60px !important;
+  padding: 24px 60px !important;
   overflow-y: auto;
-  background: transparent; /* Suppression de l'overlay pour le fond radial */
+  background: transparent;
+  transition: padding 0.5s ease;
+}
+
+/* Version sans padding pour le plein écran (PDF) */
+.content-flush {
+  padding: 0 !important;
+}
+
+/* Sidebar Links Polish */
+.cap-sidebar-link {
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.cap-sidebar-link:hover {
+  transform: translateX(8px);
 }
 
 /* ─── Typography & Spacing Catalog ─── */

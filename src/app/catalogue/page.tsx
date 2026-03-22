@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+﻿import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { ArrowRight, Box, ShieldCheck, Database, LayoutGrid } from "lucide-react";
@@ -8,7 +8,7 @@ export default async function ModulesPage() {
   const session = await auth();
 
   if (!session?.user) {
-    redirect("/auth/signin");
+    redirect("/auth/login");
   }
 
   const userRole = session.user.role;
@@ -18,7 +18,7 @@ export default async function ModulesPage() {
   if (!userGroupId && !isStaff) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center p-8 text-center text-white/50">
-        <h2 className="text-2xl font-bold mb-4">Aucun groupe assigné</h2>
+        <h2 className="text-2xl font-bold mb-4">Aucun groupe assignÃ©</h2>
         <p>Veuillez contacter votre administrateur.</p>
       </div>
     );
@@ -68,11 +68,11 @@ export default async function ModulesPage() {
         }
       } as any
     },
-    // Le tri sera fait manuellement après pour respecter l'ordre du groupe si applicable
+    // Le tri sera fait manuellement aprÃ¨s pour respecter l'ordre du groupe si applicable
     orderBy: { createdAt: "desc" },
   });
 
-  // Si on est un stagiaire, on trie par l'ordre défini dans GroupModule
+  // Si on est un stagiaire, on trie par l'ordre dÃ©fini dans GroupModule
   const sortedModules = !isStaff ? [...modules].sort((a, b) => {
     const orderA = a.groupModules?.[0]?.order ?? 0;
     const orderB = b.groupModules?.[0]?.order ?? 0;
@@ -92,8 +92,8 @@ export default async function ModulesPage() {
   const getModuleStyle = (title: string) => {
     const t = title.toLowerCase();
     if (t.includes("ia") || t.includes("ai")) return { icon: ShieldCheck, colorClass: "icon-ethique" };
-    if (t.includes("donnée") || t.includes("data")) return { icon: Database, colorClass: "icon-data" };
-    if (t.includes("éthique")) return { icon: ShieldCheck, colorClass: "icon-ethique" };
+    if (t.includes("donnÃ©e") || t.includes("data")) return { icon: Database, colorClass: "icon-data" };
+    if (t.includes("Ã©thique")) return { icon: ShieldCheck, colorClass: "icon-ethique" };
     return { icon: Box, colorClass: "icon-general" };
   };
 
@@ -125,7 +125,7 @@ export default async function ModulesPage() {
 
           return (
             <Link href={`/catalogue/${module.id}`} key={module.id} className="glass-card p-10 flex flex-col relative group overflow-hidden border border-[#0070FF]/20 hover:scale-[1.02] hover:border-[#0070FF]/80 hover:shadow-[0_0_30px_rgba(0,112,255,0.4)] transition-all cursor-pointer">
-              {/* Icône Thématique */}
+              {/* IcÃ´ne ThÃ©matique */}
               <div className="flex items-start justify-between mb-6">
                 <div className={`p-4 rounded-xl bg-white/5 border border-white/10 ${colorClass} shadow-lg shadow-black/20 group-hover:scale-110 transition-transform group-hover:border-[#0070FF]/50 group-hover:shadow-[#0070FF]/20`}>
                   <Icon size={32} strokeWidth={1.5} className="group-hover:text-[#0070FF] transition-colors" />
@@ -138,14 +138,14 @@ export default async function ModulesPage() {
                   {module.title}
                 </h3>
                 <p className="text-sm font-medium text-white/40 leading-relaxed line-clamp-3">
-                  {module.objective || "Maitriser les fondamentaux de ce module pédagogique."}
+                  {module.objective || "Maitriser les fondamentaux de ce module pÃ©dagogique."}
                 </p>
               </div>
 
               {/* Spacer pour pousser la progression en bas */}
               <div className="flex-1" />
 
-              {/* Progression et Flèche bas de carte */}
+              {/* Progression et FlÃ¨che bas de carte */}
               <div className="mt-6 border-t border-white/5 pt-6 flex items-end justify-between relative z-10">
                 <div className="w-3/4 pr-8">
                   <div className="flex justify-between items-end mb-2">
@@ -157,7 +157,7 @@ export default async function ModulesPage() {
                   </div>
                 </div>
                 
-                {/* Flèche discrète au lieu du bouton */}
+                {/* FlÃ¨che discrÃ¨te au lieu du bouton */}
                 <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 group-hover:bg-[#0070FF] group-hover:border-[#0070FF] transition-colors group-hover:shadow-[0_0_15px_rgba(0,112,255,0.4)]">
                    <ArrowRight size={18} className="text-white/50 group-hover:text-white transition-colors group-hover:translate-x-0.5" />
                 </div>
@@ -169,3 +169,4 @@ export default async function ModulesPage() {
     </div>
   );
 }
+

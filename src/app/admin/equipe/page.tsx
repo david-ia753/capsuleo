@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+﻿import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getTeamData } from "@/app/actions/equipe";
 import EquipeClient from "./EquipeClient";
@@ -6,7 +6,7 @@ import EquipeClient from "./EquipeClient";
 export default async function EquipePage() {
   const session = await auth();
   if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/auth/signin");
+    redirect("/auth/login");
   }
 
   const { members, invitations } = await getTeamData();
@@ -20,3 +20,4 @@ export default async function EquipePage() {
     </div>
   );
 }
+

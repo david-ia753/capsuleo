@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { SessionProvider } from "@/components/SessionProvider";
 import { MobileHeader } from "@/components/MobileHeader";
@@ -14,7 +14,7 @@ export default async function AdminLayout({
   const session = await auth();
 
   if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/auth/signin");
+    redirect("/auth/login");
   }
 
   return (
@@ -25,3 +25,4 @@ export default async function AdminLayout({
     </SessionProvider>
   );
 }
+

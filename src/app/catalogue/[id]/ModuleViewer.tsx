@@ -79,7 +79,7 @@ export default function ModuleViewer({ module }: ModuleViewerProps) {
   return (
     <div className="flex flex-col w-full min-h-screen bg-[#001D3A] text-white m-0 p-0 border-none">
       {/* Header Minimaliste */}
-      <header className="w-full relative z-20 m-0 p-0 py-8 px-10">
+      <header className={`w-full relative z-20 m-0 p-0 transition-all duration-500 ${activeView === 'READER' ? 'py-4 px-6 opacity-80' : 'py-8 px-10'}`}>
         <div className="flex flex-row items-start justify-between w-full">
           <div className="flex flex-col gap-0 m-0 p-0 max-w-4xl">
             <h1 className="text-4xl font-black text-[#FFC800] leading-tight m-0 p-0 drop-shadow-md tracking-tighter">{module.title}</h1>
@@ -135,7 +135,7 @@ export default function ModuleViewer({ module }: ModuleViewerProps) {
           
           {/* VUE DASHBOARD (Sommaire Interactif) */}
           {activeView === 'DASHBOARD' && (
-            <div className="max-w-6xl mx-auto w-full px-10 py-8">
+            <div className="max-w-6xl mx-auto w-full px-4 lg:px-10 py-8">
               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0070FF] mb-6 flex items-center gap-2">
                  <LayoutDashboard size={14} /> Sommaire du Module
               </h3>
@@ -251,7 +251,7 @@ export default function ModuleViewer({ module }: ModuleViewerProps) {
 
           {/* VUE LECTEUR GÉNÉRIQUE */}
           {activeView === 'READER' && selectedFile && (
-            <div id="reader-container" className="flex-1 flex flex-col w-full h-full relative">
+            <div id="reader-container" className="flex-1 flex flex-col w-full h-full relative p-0 m-0">
               {selectedFile.isAudio ? (
                 <div className="flex-1 flex flex-col items-center justify-center p-12">
                    <div className="w-48 h-48 rounded-full bg-gradient-to-tr from-[#FFC800] to-[#FF8000] flex items-center justify-center mb-12 shadow-[0_0_50px_rgba(255,200,0,0.3)] animate-pulse">

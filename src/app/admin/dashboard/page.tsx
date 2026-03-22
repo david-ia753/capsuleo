@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+﻿import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import DashboardClient from "./DashboardClient";
@@ -7,10 +7,10 @@ export default async function DashboardPage() {
   const session = await auth();
 
   if (!session?.user || session.user.role !== "ADMIN") {
-    redirect("/auth/signin");
+    redirect("/auth/login");
   }
 
-  // 1. Récupération des données brutes
+  // 1. RÃ©cupÃ©ration des donnÃ©es brutes
   const studentsRaw = await prisma.user.findMany({
     where: { role: "STUDENT" },
     include: {
@@ -44,7 +44,7 @@ export default async function DashboardPage() {
       ? modulesRaw.filter(m => m.groupModules.some(gm => gm.groupId === student.groupId))
       : [];
     
-    // Total d'items à "consommer" pour ce stagiaire
+    // Total d'items Ã  "consommer" pour ce stagiaire
     let totalItems = 0;
     let completedItems = 0;
     let totalScore = 0;
@@ -78,8 +78,8 @@ export default async function DashboardPage() {
        email: student.email,
        groupName: student.group?.name || "Sans Groupe",
        groupId: student.groupId || "",
-       modulesStarted: student.progress.length > 0 || student.fileProgress.length > 0 ? 1 : 0, // Simplifié pour l'instant
-       modulesCompleted: Math.round(completionRate), // On utilise le taux global comme "score" de complétion
+       modulesStarted: student.progress.length > 0 || student.fileProgress.length > 0 ? 1 : 0, // SimplifiÃ© pour l'instant
+       modulesCompleted: Math.round(completionRate), // On utilise le taux global comme "score" de complÃ©tion
        averageScore: averageScore,
        totalModules: studentModules.length,
        completionRate: completionRate // On ajoute ce champ si besoin
@@ -94,7 +94,7 @@ export default async function DashboardPage() {
   const stats = {
     activeStudents: studentsRaw.length,
     globalAverageScore: globalAverageScore,
-    mostViewedModule: modulesRaw[0]?.title || "N/A", // À affiner si besoin
+    mostViewedModule: modulesRaw[0]?.title || "N/A", // Ã€ affiner si besoin
   };
 
   const formattedGroups = groups.map(g => ({ id: g.id, name: g.name }));
@@ -108,3 +108,4 @@ export default async function DashboardPage() {
     />
   );
 }
+

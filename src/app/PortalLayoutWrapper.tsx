@@ -12,7 +12,7 @@ export default async function PortalLayoutWrapper({
   const session = await auth();
 
   if (!session?.user) {
-    redirect("/auth/signin");
+    redirect("/auth/login");
   }
 
   return (
