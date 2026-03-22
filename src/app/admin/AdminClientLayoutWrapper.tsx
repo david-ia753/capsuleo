@@ -14,7 +14,7 @@ export default function AdminClientLayoutWrapper({
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   return (
-    <div className="flex bg-[#020617] min-h-screen text-white">
+    <div className="admin-layout bg-[#020617] text-white">
       {/* Mobile Header */}
       <MobileHeader 
         isOpen={isSidebarOpen} 
@@ -30,7 +30,7 @@ export default function AdminClientLayoutWrapper({
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 lg:ml-64 p-4 lg:p-8 pt-20 lg:pt-8 min-h-screen overflow-x-hidden">
+      <main className="admin-content lg:ml-64 pt-20 lg:pt-8 min-h-screen">
         {children}
       </main>
     </div>
