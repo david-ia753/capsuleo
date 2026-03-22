@@ -9,11 +9,12 @@ export async function inviteMember(formData: FormData) {
   
   if (!email) return { error: "Email requis" };
 
-  try {
+    const normalizedEmail = email.toLowerCase();
+
     // On crée une invitation
     await prisma.invitation.create({
       data: {
-        email,
+        email: normalizedEmail,
         role: Role.TRAINER,
         status: "PENDING"
       }
