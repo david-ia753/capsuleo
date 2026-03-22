@@ -10,7 +10,7 @@ const pool = new Pool({
   connectionString,
   ssl: { rejectUnauthorized: false }
 });
-const adapter = new PrismaPg(pool);
+const adapter = new PrismaPg(pool as any);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
