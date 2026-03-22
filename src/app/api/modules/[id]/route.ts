@@ -29,9 +29,18 @@ export async function DELETE(
     });
 
     // 2. Suppression physique des fichiers
+    const UPLOAD_DIR = process.env.NODE_ENV === "production" 
+      ? "/app/storage/uploads" 
+      : path.join(process.cwd(), "storage", "uploads");
+
     for (const file of files) {
       try {
-        const fullPath = path.join(process.cwd(), "public", file.path);
+          // Calcul du nom du fichier réel (depuis l'URL /api/files/...)
+          const filename = file.path.split("/").pop();
+          const UPLOAD_DIR = process.env.NODE_ENV === "production" 
+            ? "/app/storage/uploads" 
+            : path.join(process.cwd(), "storage", "uploads");
+          const fullPath = path.join(UPLOAD_DIR, filename || "");
         if (fs.existsSync(fullPath)) {
           fs.unlinkSync(fullPath);
         }

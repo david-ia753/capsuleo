@@ -4,24 +4,24 @@ import { SessionProvider } from "@/components/SessionProvider";
 import { MobileHeader } from "@/components/MobileHeader";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import ClientLayoutWrapper from "./ClientLayoutWrapper";
+import AdminClientLayoutWrapper from "./AdminClientLayoutWrapper";
 
-export default async function PortalLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const session = await auth();
 
-  if (!session?.user) {
+  if (!session?.user || session.user.role !== "ADMIN") {
     redirect("/auth/signin");
   }
 
   return (
     <SessionProvider session={session}>
-      <ClientLayoutWrapper session={session}>
+      <AdminClientLayoutWrapper session={session}>
         {children}
-      </ClientLayoutWrapper>
+      </AdminClientLayoutWrapper>
     </SessionProvider>
   );
 }

@@ -74,7 +74,8 @@ export async function middleware(req: NextRequest) {
 
       if (token.role !== "ADMIN" && !(token.role === "TRAINER" && isTrainerRoute)) {
         console.log(`>>> MIDDLEWARE UNAUTHORIZED ADMIN: ${token.role} tente d'accéder à ${pathname}`);
-        return NextResponse.redirect(new URL(token.role === "STUDENT" ? "/catalogue" : "/dashboard", req.url));
+        // Role-based main entry point redirect
+        return NextResponse.redirect(new URL(token.role === "STUDENT" ? "/catalogue" : "/admin/dashboard", req.url));
       }
     }
 
