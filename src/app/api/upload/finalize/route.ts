@@ -3,14 +3,16 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import path from "path";
+import fs from "fs";
 
 export const maxDuration = 300; 
 
 async function generateModuleInfo(text: string) {
   const limitedText = text.substring(0, 30000).trim(); 
+  const debugPath = process.env.NODE_ENV === "production" ? "/app/api_debug.log" : "api_debug.log";
 
   if (!process.env.GEMINI_API_KEY) {
-    console.warn("Clé API Gemini non configurée.");
+    try { fs.appendFileSync(debugPath, "[SDK ERROR] Clé API Gemini manquante\n"); } catch(e){}
     return null;
   }
 
@@ -35,7 +37,6 @@ async function generateModuleInfo(text: string) {
 Texte :
 ${limitedText || "Analyse ce module général."}`;
 
-  // Tentative via le SDK avec repli (fallback)
   for (const modelName of modelsToTry) {
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
@@ -52,13 +53,13 @@ ${limitedText || "Analyse ce module général."}`;
       
       return JSON.parse(cleanJson.trim());
     } catch (e: any) {
-      if (!e.message.includes("404")) {
-         require("fs").appendFileSync("api_debug.log", `[SDK ERROR] ${modelName}: ${e.message}\n`);
-      }
+      try {
+        fs.appendFileSync(debugPath, `[SDK ERROR] ${modelName}: ${e.message}\n`);
+      } catch (logErr) {}
     }
   }
 
-  // ULTIME RECOURS : APPEL REST DIRECT (v1 endpoint)
+  // Fallback REST
   try {
     const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
@@ -78,6 +79,9 @@ ${limitedText || "Analyse ce module général."}`;
         }
         return JSON.parse(cleanJson.trim());
       }
+    } else {
+      const errTxt = await response.text();
+      try { fs.appendFileSync(debugPath, `[REST ERROR]: ${response.status} - ${errTxt.substring(0, 200)}\n`); } catch(e){}
     }
   } catch (error: any) {}
 
@@ -103,6 +107,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 401 });
   }
 
+  const debugPath = process.env.NODE_ENV === "production" ? "/app/api_debug.log" : "api_debug.log";
+
   try {
     const { fileIds } = await request.json();
 
@@ -116,6 +122,7 @@ export async function POST(request: NextRequest) {
 
     let combinedText = "";
     let defaultTitle = "Nouveau Module";
+    let extractionLogs = "";
 
     for (const fileRecord of uploadedFiles) {
       const file = fileRecord as any;
@@ -123,7 +130,6 @@ export async function POST(request: NextRequest) {
         defaultTitle = file.originalName.replace(/\.[^/.]+$/, "");
       }
 
-      // TENTATIVE DE RÉ-EXTRACTION SI VIDE
       let textToUse = file.extractedText || "";
       if (textToUse.length < 10 && file.path && file.category !== 'AUDIO' && file.originalName.toLowerCase().endsWith(".pdf")) {
         try {
@@ -133,30 +139,39 @@ export async function POST(request: NextRequest) {
             : path.join(process.cwd(), "storage", "uploads");
           const fullPath = path.join(UPLOAD_DIR, filename || "");
           
-          const fs = require("fs");
           if (fs.existsSync(fullPath)) {
             const PDFParser = require("pdf2json");
             const pdfParser = new PDFParser(null, 1);
             
             textToUse = await new Promise((resolve) => {
-              pdfParser.on("pdfParser_dataError", () => resolve(""));
+              pdfParser.on("pdfParser_dataError", (err: any) => {
+                extractionLogs += `[ERR PDF ${file.id}] ${JSON.stringify(err)}\n`;
+                resolve("");
+              });
               pdfParser.on("pdfParser_dataReady", () => {
                 const rawText = pdfParser.getRawTextContent();
                 resolve(cleanUnicode(rawText));
               });
               pdfParser.loadPDF(fullPath);
             });
+            extractionLogs += `[OK PDF ${file.id}] extracted ${textToUse.length} chars\n`;
+          } else {
+            extractionLogs += `[ERR PDF ${file.id}] file not found at ${fullPath}\n`;
           }
-        } catch (err) {}
+        } catch (err: any) {
+          extractionLogs += `[CRASH PDF ${file.id}] ${err.message}\n`;
+        }
       }
 
       if (textToUse.length > 5) {
-        combinedText += `\n\n--- Fichier: ${file.originalName} ---\n\n${textToUse}`;
+        combinedText += textToUse;
       }
     }
 
     // Diagnostique
-    require("fs").appendFileSync("api_debug.log", `[FINALIZE V1] Files: ${uploadedFiles.length}, Text length: ${combinedText.length}\n`);
+    try {
+      fs.appendFileSync(debugPath, `\n--- NEW FINALIZE SESSION ---\n${extractionLogs}[FINALIZE] Files: ${uploadedFiles.length}, Total Text: ${combinedText.length}\n`);
+    } catch (e) {}
 
     const aiData = await generateModuleInfo(combinedText);
 
