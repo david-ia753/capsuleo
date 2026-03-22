@@ -240,8 +240,6 @@ body::after {
 
 
 
-/* Injection CSS pour vérification forcée */
-* { --sidebar-bg: #0B1120 !important; }
 
 /* Masquage global et agressif des barres de défilement */
 .no-scrollbar, 
