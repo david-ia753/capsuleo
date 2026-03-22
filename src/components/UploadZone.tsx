@@ -155,6 +155,10 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
     setIsRedirecting(true);
     setIsSynthesizing(true);
     
+    // Titre par défaut basé sur le premier fichier
+    const firstFile = files[0]?.file?.name || "";
+    const defaultTitle = firstFile ? firstFile.replace(/\.[^/.]+$/, "") : "Nouveau Module";
+    
     try {
       const synthResponse = await fetch("/api/upload/finalize", {
         method: "POST",
@@ -169,24 +173,28 @@ export default function UploadZone({ defaultGroupId }: UploadZoneProps) {
       setReviewData({
         fileIds: serverIds,
         groupId: groupId,
-        title: synthResult.aiData?.title || "Nouveau Module",
-        objective: synthResult.aiData?.objective || "Généré par Capsuléo IA",
-        description: synthResult.aiData?.shortDescription || (synthResult.aiData?.objective ? synthResult.aiData.objective.substring(0, 100) : ""),
+        title: synthResult.aiData?.title || defaultTitle,
+        objective: synthResult.aiData?.objective || (serverIds.length > 0 ? "Synthèse de formation" : "Généré par Capsuléo IA"),
+        description: synthResult.aiData?.shortDescription || (synthResult.aiData?.objective ? synthResult.aiData.objective.substring(0, 100) : "Module importé le " + new Date().toLocaleDateString()),
         exercises: synthResult.aiData?.exercises || [],
-        thumbnailPrompt: synthResult.aiData?.thumbnailPrompt || synthResult.aiData?.title || ""
+        thumbnailPrompt: synthResult.aiData?.thumbnailPrompt || synthResult.aiData?.title || defaultTitle
       });
 
       setIsReviewing(true);
     } catch (err) {
-      alert("La synthèse globale a échoué. Veuillez remplir les infos manuellement.");
+      console.error("Erreur synthèse:", err);
+      // tentative de retrouver le titre même en erreur
+      const firstFile = files[0]?.file?.name || "";
+      const fallbackTitle = firstFile ? firstFile.replace(/\.[^/.]+$/, "") : "Nouveau Module";
+
       setReviewData({
         fileIds: serverIds,
         groupId: groupId,
-        title: "Nouveau Module",
-        description: "",
-        objective: "",
+        title: fallbackTitle,
+        description: "Module importé le " + new Date().toLocaleDateString(),
+        objective: "Veuillez compléter les informations pédagogiques de ce module.",
         exercises: [],
-        thumbnailPrompt: ""
+        thumbnailPrompt: fallbackTitle
       });
       setIsReviewing(true);
     } finally {

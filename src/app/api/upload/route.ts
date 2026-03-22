@@ -50,60 +50,60 @@ async function extractTextFromFile(filepath: string, mimeType: string): Promise<
  * Utilise Gemini pour générer les données pédagogiques du module (Quiz uniquement)
  */
 async function generateModuleInfo(text: string) {
-  const limitedText = text.substring(0, 15000); 
+  const limitedText = text.substring(0, 15000).trim(); 
 
   if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "votre_cle_ici") {
     console.warn("Clé API Gemini non configurée.");
     return null;
   }
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
-
-  const prompt = `Tu es un expert en pédagogie. Analyse ce cours et génère un objet JSON strict.
-Structure JSON attendue :
+  const apiKey = process.env.GEMINI_API_KEY;
+  const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-2.0-flash-lite-preview-02-05"];
+  const prompt = `Analyse ce cours et génère un objet JSON strict.
 {
   "title": "Titre du module",
   "objective": "Objectif global",
-  "shortDescription": "Description courte (100 car. max)",
-  "thumbnailPrompt": "Une description textuelle de l'image pour la vignette (ex: 'Un cerveau bleu neon qui pulse')",
+  "shortDescription": "Description (100 car. max)",
+  "thumbnailPrompt": "Une description visuelle pour DALL-E",
   "exercises": [
     {
       "type": "TEXTE_A_TROUS",
-      "question": "Texte avec des [TROU] à remplir",
-      "answer": "mot1, mot2",
+      "question": "Texte avec [TROU]",
+      "answer": "réponse",
       "level": "DEBUTANT"
     }
   ]
 }
 
-Règles : 
-- Ne génère QUE des quiz de type TEXTE_A_TROUS ou MOTS_A_CASER.
-- Propose au moins 4 exercices au total, répartis entre les niveaux DEBUTANT et EXPERT.
-- Le format doit être un JSON pur, sans texte avant ou après.
+Texte :
+${limitedText || "Analyse ce module général."}`;
 
-Texte du cours :
-${limitedText}`;
-
-  try {
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
-    
-    let cleanJson = responseText.trim();
-    if (cleanJson.includes("```json")) {
-      cleanJson = cleanJson.split("```json")[1].split("```")[0];
-    } else if (cleanJson.includes("```")) {
-      cleanJson = cleanJson.split("```")[1].split("```")[0];
+  for (const modelName of modelsToTry) {
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(prompt);
+      const responseText = result.response.text();
+      
+      let cleanJson = responseText.trim();
+      if (cleanJson.includes("```json")) {
+        cleanJson = cleanJson.split("```json")[1].split("```")[0];
+      } else if (cleanJson.includes("```")) {
+        cleanJson = cleanJson.split("```")[1].split("```")[0];
+      }
+      
+      return JSON.parse(cleanJson.trim());
+    } catch (e: any) {
+      console.error(`Erreur Gemini (${modelName}):`, e.message);
     }
-    
-    return JSON.parse(cleanJson.trim());
-  } catch (error) {
-    console.error("Erreur Gemini:", error);
-    return null;
   }
+
+  return null;
 }
 
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
+const UPLOAD_DIR = process.env.NODE_ENV === "production" 
+  ? "/app/storage/uploads" 
+  : path.join(process.cwd(), "storage", "uploads");
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
         mimeType: file.type,
         size: file.size,
         category: category as any,
-        path: `/uploads/${filename}`,
+        path: `/api/files/${filename}`,
         extractedText: extractedText.substring(0, 50000),
         isProcessed: false
       }

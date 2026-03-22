@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import path from "path";
 
 export const maxDuration = 300; 
 
@@ -14,13 +15,13 @@ async function generateModuleInfo(text: string) {
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
-  const modelsToTry = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.0-flash-lite"];
-  const prompt = `Génère un objet JSON pédagogique à partir de ce texte :
+  const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-2.0-flash-lite-preview-02-05"];
+  const prompt = `Analyse ce cours et génère un objet JSON strict.
 {
   "title": "Titre du module",
   "objective": "Objectif global",
   "shortDescription": "Description (100 car. max)",
-  "thumbnailPrompt": "Vignette style néon",
+  "thumbnailPrompt": "Une description visuelle pour DALL-E",
   "exercises": [
     {
       "type": "TEXTE_A_TROUS",
@@ -45,6 +46,8 @@ ${limitedText || "Analyse ce module général."}`;
       let cleanJson = responseText.trim();
       if (cleanJson.includes("```json")) {
         cleanJson = cleanJson.split("```json")[1].split("```")[0];
+      } else if (cleanJson.includes("```")) {
+        cleanJson = cleanJson.split("```")[1].split("```")[0];
       }
       
       return JSON.parse(cleanJson.trim());
@@ -57,7 +60,7 @@ ${limitedText || "Analyse ce module général."}`;
 
   // ULTIME RECOURS : APPEL REST DIRECT (v1 endpoint)
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -109,18 +112,24 @@ export async function POST(request: NextRequest) {
 
       // TENTATIVE DE RÉ-EXTRACTION SI VIDE
       let textToUse = file.extractedText || "";
-      if (textToUse.length < 10 && file.path && file.category !== 'AUDIO') {
+      if (textToUse.length < 10 && file.path && file.category !== 'AUDIO' && file.originalName.toLowerCase().endsWith(".pdf")) {
         try {
-          const fs = require("fs");
-          const path = require("path");
-          const fullPath = path.join(process.cwd(), "public", file.path);
+          const filename = file.path.split("/").pop();
+          const UPLOAD_DIR = process.env.NODE_ENV === "production" 
+            ? "/app/storage/uploads" 
+            : path.join(process.cwd(), "storage", "uploads");
+          const fullPath = path.join(UPLOAD_DIR, filename || "");
           
+          const fs = require("fs");
           if (fs.existsSync(fullPath)) {
-            // Lecture brute pour voir si c'est du texte
-            const content = fs.readFileSync(fullPath).toString('utf-8');
-            if (content.length > 100) {
-              textToUse = content.substring(0, 10000); // On récupère ce qu'on peut
-            }
+            const PDFParser = require("pdf2json");
+            const pdfParser = new PDFParser(null, 1);
+            
+            textToUse = await new Promise((resolve) => {
+              pdfParser.on("pdfParser_dataError", () => resolve(""));
+              pdfParser.on("pdfParser_dataReady", () => resolve(pdfParser.getRawTextContent()));
+              pdfParser.loadPDF(fullPath);
+            });
           }
         } catch (err) {}
       }
