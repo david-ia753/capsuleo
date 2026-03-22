@@ -6,6 +6,8 @@ import bcrypt from "bcryptjs";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  secret: process.env.AUTH_SECRET || "antigravity-dev-secret-key-change-in-production-2024",
+  trustHost: true,
   providers: [
     Credentials({
       name: "Credentials",
