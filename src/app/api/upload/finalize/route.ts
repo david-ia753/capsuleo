@@ -17,7 +17,12 @@ async function generateModuleInfo(text: string) {
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
-  const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-2.0-flash-lite-preview-02-05"];
+  const modelsToTry = [
+    "gemini-2.0-flash", 
+    "gemini-2.0-flash-lite", 
+    "gemini-2.5-flash", // Listed as available in user's debug output
+    "gemini-1.5-flash"  // Keep as fallback just in case
+  ];
   const prompt = `Analyse ce cours et génère un objet JSON strict.
 {
   "title": "Titre du module",
