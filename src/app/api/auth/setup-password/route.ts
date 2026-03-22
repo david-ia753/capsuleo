@@ -28,6 +28,9 @@ export async function POST(req: Request) {
 
     if (user) {
       // Cas où l'utilisateur existe déjà (créé via invitation ou autre) mais n'a pas de mot de passe
+      const roleToUpdate = invitation?.role || user.role;
+      const statusToUpdate = invitation ? "APPROVED" : user.status;
+
       user = await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -35,10 +38,15 @@ export async function POST(req: Request) {
           firstName: firstName || user.firstName,
           lastName: lastName || user.lastName,
           name: `${firstName || user.firstName} ${lastName || user.lastName}`.trim(),
+          role: roleToUpdate,
+          status: statusToUpdate as any,
         },
       });
     } else {
-      // Cas d'une nouvelle inscription libre
+      // Cas d'une nouvelle inscription (via invitation ou libre)
+      const roleFromInvitation = invitation?.role || "STUDENT";
+      const statusFromInvitation = invitation ? "APPROVED" : "PENDING";
+
       let trainerId = null;
       if (groupId) {
         const group = await prisma.group.findUnique({ where: { id: groupId } });
@@ -52,12 +60,20 @@ export async function POST(req: Request) {
           firstName: firstName,
           lastName: lastName,
           name: `${firstName} ${lastName || ""}`.trim(),
-          role: "STUDENT",
-          status: "PENDING",
+          role: roleFromInvitation,
+          status: statusFromInvitation as any,
           groupId: groupId || null,
           trainerId: trainerId
         },
       });
+
+      // Si c'était une invitation, on la marque comme acceptée
+      if (invitation) {
+        await prisma.invitation.update({
+          where: { id: invitation.id },
+          data: { status: "ACCEPTED" }
+        });
+      }
     }
 
     return NextResponse.json({ message: "Compte configuré avec succès" });

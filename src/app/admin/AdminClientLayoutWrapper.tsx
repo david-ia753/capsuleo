@@ -14,7 +14,7 @@ export default function AdminClientLayoutWrapper({
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   return (
-    <div className="admin-layout bg-[#020617] text-white">
+    <div className="admin-layout text-white bg-transparent">
       {/* Mobile Header */}
       <MobileHeader 
         isOpen={isSidebarOpen} 

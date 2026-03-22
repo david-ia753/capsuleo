@@ -77,12 +77,14 @@ export default function ModuleViewer({ module }: ModuleViewerProps) {
   };
   
   return (
-    <div className="flex flex-col w-full min-h-screen bg-[#001D3A] text-white m-0 p-0 border-none">
-      {/* Header Minimaliste */}
-      <header className={`w-full relative z-20 m-0 p-0 transition-all duration-500 ${activeView === 'READER' ? 'py-4 px-6 opacity-80' : 'py-8 px-10'}`}>
+    <div className="flex flex-col w-full min-h-screen bg-[#020617] text-white m-0 p-0 border-none">
+      {/* Header - Adaptive height based on view */}
+      <header className={`w-full relative z-20 m-0 transition-all duration-500 overflow-hidden ${
+        activeView === 'READER' ? 'h-0' : 'py-8 px-6 lg:px-10'
+      }`}>
         <div className="flex flex-row items-start justify-between w-full">
           <div className="flex flex-col gap-0 m-0 p-0 max-w-4xl">
-            <h1 className="text-4xl font-black text-[#FFC800] leading-tight m-0 p-0 drop-shadow-md tracking-tighter">{module.title}</h1>
+            <h1 className="text-4xl font-black text-[#fbbf24] leading-tight m-0 p-0 drop-shadow-md tracking-tighter">{module.title}</h1>
             <p className="text-sm font-medium text-white/50 leading-relaxed max-w-3xl m-0 mt-1">{module.objective}</p>
           </div>
 
@@ -93,39 +95,48 @@ export default function ModuleViewer({ module }: ModuleViewerProps) {
               className="group flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10 transition-all duration-300 font-black text-xs uppercase tracking-widest"
             >
               <LayoutGrid size={16} className="group-hover:rotate-12 transition-transform duration-500" />
-              Retour au catalogue
+              Retour
             </Link>
           </div>
         </div>
 
-        {activeView !== 'DASHBOARD' && (
+        {activeView === 'FICHE' && (
           <div className="flex items-center justify-between w-full mt-6 pb-4 border-b border-white/10">
             <button 
               onClick={() => {
                 setActiveView('DASHBOARD');
                 setSelectedFile(null);
               }}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 hover:bg-[#0070FF]/10 font-bold text-sm text-white/70 hover:text-white transition-all border border-[#0070FF]/50 hover:shadow-[0_0_15px_rgba(0,112,255,0.5)]"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 hover:bg-[#0070FF]/10 font-bold text-sm text-white/70 hover:text-white transition-all border border-[#0070FF]/50"
             >
               <ArrowLeft size={16} />
               Retour au sommaire
             </button>
-
-            <div className="flex items-center gap-4">
-               {activeView === 'READER' && ['COURS', 'PRESENTATION'].includes(selectedFile?.category) && (
-                 <button
-                   onClick={handleFullscreen}
-                   className="flex items-center gap-2 p-2.5 px-4 rounded-xl bg-white/5 hover:bg-[#0070FF]/10 text-white/50 hover:text-white group transition-all border border-[#0070FF]/50 hover:shadow-[0_0_15px_rgba(0,112,255,0.5)]"
-                   title="Plein écran"
-                 >
-                   <Maximize size={16} className="group-hover:scale-110 transition-transform group-hover:text-[#0070FF]"/>
-                   <span className="text-xs font-bold hidden sm:block group-hover:text-white">Plein écran</span>
-                 </button>
-               )}
-            </div>
           </div>
         )}
       </header>
+
+      {/* Floating controls for READER mode */}
+      {activeView === 'READER' && (
+        <div className="fixed top-6 left-6 z-[100] flex items-center gap-3">
+          <button 
+            onClick={() => {
+              setActiveView('DASHBOARD');
+              setSelectedFile(null);
+            }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#020617]/80 backdrop-blur-xl hover:bg-[#020617] font-black text-[10px] uppercase tracking-widest text-[#fbbf24] transition-all border border-white/10 shadow-2xl"
+          >
+            <ArrowLeft size={16} />
+            SOMMAIRE
+          </button>
+          <button
+            onClick={handleFullscreen}
+            className="p-2.5 rounded-2xl bg-white/5 backdrop-blur-xl hover:bg-white/10 text-white/50 hover:text-white transition-all border border-white/10"
+          >
+            <Maximize size={16} />
+          </button>
+        </div>
+      )}
 
       {/* Zone de Contenu Principale */}
       <main className="flex-1 w-full m-0 p-0 overflow-y-auto no-scrollbar flex flex-col relative z-10 border-none">
@@ -135,7 +146,7 @@ export default function ModuleViewer({ module }: ModuleViewerProps) {
           
           {/* VUE DASHBOARD (Sommaire Interactif) */}
           {activeView === 'DASHBOARD' && (
-            <div className="max-w-6xl mx-auto w-full px-4 lg:px-10 py-8">
+            <div className="max-w-6xl mx-auto w-full px-10 py-8">
               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0070FF] mb-6 flex items-center gap-2">
                  <LayoutDashboard size={14} /> Sommaire du Module
               </h3>
@@ -251,7 +262,7 @@ export default function ModuleViewer({ module }: ModuleViewerProps) {
 
           {/* VUE LECTEUR GÉNÉRIQUE */}
           {activeView === 'READER' && selectedFile && (
-            <div id="reader-container" className="flex-1 flex flex-col w-full h-full relative p-0 m-0">
+            <div id="reader-container" className="flex-1 flex flex-col w-full h-full relative">
               {selectedFile.isAudio ? (
                 <div className="flex-1 flex flex-col items-center justify-center p-12">
                    <div className="w-48 h-48 rounded-full bg-gradient-to-tr from-[#FFC800] to-[#FF8000] flex items-center justify-center mb-12 shadow-[0_0_50px_rgba(255,200,0,0.3)] animate-pulse">
@@ -268,9 +279,9 @@ export default function ModuleViewer({ module }: ModuleViewerProps) {
                 <div className="w-full h-full m-0 p-0 border-none bg-white">
                   <iframe 
                     src={`${selectedFile.path}#toolbar=0&navpanes=0&scrollbar=0`} 
-                    className="pdf-iframe w-full h-full border-none m-0 p-0 block bg-white"
+                    className="pdf-iframe w-full h-screen border-none m-0 p-0 block bg-white"
                     title={selectedFile.name || "Lecteur Document"}
-                    style={{ border: 'none', margin: 0, padding: 0, height: '90vh' }}
+                    style={{ border: 'none', margin: 0, padding: 0 }}
                   />
                   <div className="absolute inset-0 pointer-events-none" onContextMenu={(e) => e.preventDefault()} />
                 </div>
@@ -283,7 +294,7 @@ export default function ModuleViewer({ module }: ModuleViewerProps) {
       <style jsx global>{`
         .pdf-iframe {
           width: 100% !important;
-          height: 90vh !important;
+          height: 100vh !important;
           border: none !important;
         }
       `}</style>

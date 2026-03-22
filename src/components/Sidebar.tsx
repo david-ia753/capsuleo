@@ -43,7 +43,7 @@ export function Sidebar({ session, role, isOpen = false, onClose }: SidebarProps
       )}
 
       <aside 
-        className={`cap-sidebar-container no-scrollbar transition-transform duration-300 z-[1000] lg:translate-x-0 ${
+        className={`cap-sidebar-container no-scrollbar transition-transform duration-300 z-[1000] lg:translate-x-0 glass-sidebar ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         style={{
@@ -56,10 +56,10 @@ export function Sidebar({ session, role, isOpen = false, onClose }: SidebarProps
           display: "flex",
           flexDirection: "column",
           padding: "24px 20px",
-          backgroundColor: "rgba(11, 17, 32, 0.95)", // More opaque on mobile for better contrast
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          borderRight: "1px solid rgba(255, 255, 255, 0.1)",
+          backgroundColor: "rgba(11, 17, 32, 0.4)", // Significantly more transparent
+          backdropFilter: "blur(40px)",
+          WebkitBackdropFilter: "blur(40px)",
+          borderRight: "1px solid rgba(255, 255, 255, 0.08)",
           overflowY: "auto", 
         }}
       >
