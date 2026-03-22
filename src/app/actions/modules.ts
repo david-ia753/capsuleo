@@ -21,7 +21,7 @@ export async function getMyModules() {
     include: {
       group: {
         include: {
-          assignedModules: {
+          groupModules: {
             include: {
               module: true
             },
@@ -37,7 +37,7 @@ export async function getMyModules() {
   if (!user || !user.group) return [];
 
   // On extrait les modules du groupe de l'utilisateur
-  const modules = user.group.assignedModules.map(am => am.module);
+  const modules = user.group.groupModules.map(gm => gm.module);
 
   return modules;
 }
