@@ -83,7 +83,7 @@ export default async function DashboardPage() {
 
             <div className="relative z-10">
               <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-8 border border-white/10 group-hover:scale-110 transition-transform duration-500">
-                {React.cloneElement(card.icon as React.ReactElement, { size: 32 })}
+                {React.cloneElement(card.icon as React.ReactElement<any>, { size: 32 })}
               </div>
 
               <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">

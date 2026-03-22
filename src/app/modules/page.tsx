@@ -19,7 +19,7 @@ export default async function ModulesPage() {
         <p className="text-white/60">Accédez à vos formations et suivez votre progression.</p>
       </div>
       
-      <ModuleList modules={modules} />
+      <ModuleList modules={modules as any} />
     </div>
   );
 }
