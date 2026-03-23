@@ -29,8 +29,11 @@ export default function AdminClientLayoutWrapper({
         onClose={() => setIsSidebarOpen(false)}
       />
 
+      {/* Main Content Spacer - Hidden on Mobile */}
+      <div className="hidden lg:block w-72 min-w-[18rem]" />
+
       {/* Main Content Area */}
-      <main className="admin-content lg:pl-72 pt-20 lg:pt-8 min-h-screen">
+      <main className="flex-1 admin-content pt-20 lg:pt-8 min-h-screen">
         {children}
       </main>
     </div>

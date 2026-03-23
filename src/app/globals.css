@@ -162,7 +162,7 @@ body::after {
 
 .admin-content, .app-content {
   flex: 1;
-  padding: 24px 60px !important;
+  padding: 24px 60px;
   overflow-y: auto;
   background: transparent;
   transition: padding 0.5s ease;
