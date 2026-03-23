@@ -43,24 +43,14 @@ export function Sidebar({ session, role, isOpen = false, onClose }: SidebarProps
       )}
 
       <aside 
-        className={`cap-sidebar-container no-scrollbar transition-transform duration-300 z-[1000] lg:translate-x-0 glass-sidebar ${
+        className={`cap-sidebar-container no-scrollbar transition-transform duration-300 z-[1000] fixed left-0 top-0 h-screen w-72 flex flex-col p-6 glass-sidebar overflow-y-auto ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         style={{
-          width: "280px",
-          minWidth: "280px",
-          height: "100vh",
-          position: "fixed",
-          left: 0,
-          top: 0,
-          display: "flex",
-          flexDirection: "column",
-          padding: "24px 20px",
-          backgroundColor: "rgba(255, 255, 255, 0.03)", // Sophisticated white glass
+          backgroundColor: "rgba(255, 255, 255, 0.03)", 
           backdropFilter: "blur(40px)",
           WebkitBackdropFilter: "blur(40px)",
           borderRight: "1px solid rgba(255, 255, 255, 0.12)",
-          overflowY: "auto", 
         }}
       >
       {/* 1. Zone Marque - Taille Naturelle */}

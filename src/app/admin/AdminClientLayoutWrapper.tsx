@@ -30,7 +30,7 @@ export default function AdminClientLayoutWrapper({
       />
 
       {/* Main Content Area */}
-      <main className="admin-content lg:ml-64 pt-20 lg:pt-8 min-h-screen">
+      <main className="admin-content lg:pl-72 pt-20 lg:pt-8 min-h-screen">
         {children}
       </main>
     </div>

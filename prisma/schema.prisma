@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
-  engineType      = "library"
   previewFeatures = ["driverAdapters"]
+  engineType      = "library"
 }
 
 datasource db {
@@ -9,29 +9,29 @@ datasource db {
 }
 
 model User {
-  id            String            @id @default(cuid())
-  name          String?
-  email         String?           @unique
-  emailVerified DateTime?
-  image         String?
-  role          Role              @default(STUDENT)
-  status        UserStatus        @default(PENDING)
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  trainerId     String?
-  groupId       String?
-  firstName     String?
-  lastName      String?
-  password      String?
-  accounts      Account[]
-  fileProgress  FileProgress[]
-  trainerGroups Group[]           @relation("GroupTrainer")
-  sessions      Session[]
-  progress      StudentProgress[]
-  group         Group?            @relation(fields: [groupId], references: [id])
-  trainer       User?             @relation("TrainerStudents", fields: [trainerId], references: [id])
-  students      User[]            @relation("TrainerStudents")
-  createdModules Module[]         @relation("ModuleCreator")
+  id             String            @id @default(cuid())
+  name           String?
+  email          String?           @unique
+  emailVerified  DateTime?
+  image          String?
+  role           Role              @default(STUDENT)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  trainerId      String?
+  groupId        String?
+  password       String?
+  firstName      String?
+  lastName       String?
+  status         UserStatus        @default(PENDING)
+  accounts       Account[]
+  fileProgress   FileProgress[]
+  trainerGroups  Group[]           @relation("GroupTrainer")
+  createdModules Module[]          @relation("ModuleCreator")
+  sessions       Session[]
+  progress       StudentProgress[]
+  group          Group?            @relation(fields: [groupId], references: [id])
+  trainer        User?             @relation("TrainerStudents", fields: [trainerId], references: [id])
+  students       User[]            @relation("TrainerStudents")
 
   @@index([email])
   @@index([groupId])
@@ -76,15 +76,15 @@ model VerificationToken {
 }
 
 model Group {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  trainerId   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  trainer     User?    @relation("GroupTrainer", fields: [trainerId], references: [id])
-  users       User[]
+  id           String        @id @default(cuid())
+  name         String        @unique
+  description  String?
+  trainerId    String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  trainer      User?         @relation("GroupTrainer", fields: [trainerId], references: [id])
   groupModules GroupModule[]
+  users        User[]
 }
 
 model Module {
@@ -98,22 +98,22 @@ model Module {
   creatorId        String?
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
-  creator          User?          @relation("ModuleCreator", fields: [creatorId], references: [id])
   exercises        Exercise[]
   fiches           Fiche[]
-  files            UploadedFile[]
   groupModules     GroupModule[]
+  creator          User?          @relation("ModuleCreator", fields: [creatorId], references: [id])
+  files            UploadedFile[]
 
   @@index([creatorId])
 }
 
 model GroupModule {
-  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId   String
-  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   moduleId  String
   order     Int      @default(0)
   createdAt DateTime @default(now())
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@id([groupId, moduleId])
   @@index([groupId])
@@ -151,8 +151,8 @@ model Exercise {
   updatedAt DateTime          @updatedAt
   ficheId   String?
   moduleId  String?
-  module    Module?           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   fiche     Fiche?            @relation(fields: [ficheId], references: [id], onDelete: Cascade)
+  module    Module?           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   progress  StudentProgress[]
 
   @@index([ficheId])
@@ -185,8 +185,8 @@ model FileProgress {
   updatedAt   DateTime     @updatedAt
   userId      String
   fileId      String
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   file        UploadedFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, fileId])
   @@index([userId])

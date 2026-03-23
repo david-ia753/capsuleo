@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       category = "AUDIO";
     }
 
-    const filename = `${Date.now()}_${originalName.replace(/[^a-zA-Z0-9.]/g, "_")}`;
+    const filename = `${Date.now()}_${originalName.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9.]/g, "_")}`;
     const filepath = path.join(UPLOAD_DIR, filename);
     
     // Sauvegarde robuste via writeFile

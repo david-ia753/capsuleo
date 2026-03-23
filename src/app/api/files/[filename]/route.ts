@@ -18,19 +18,26 @@ export async function GET(
     return new NextResponse("Non autorisé", { status: 401 });
   }
 
-  const { filename } = await params;
-  const filePath = path.join(UPLOAD_DIR, filename);
+  const { filename: rawFilename } = await params;
+  const filename = decodeURIComponent(rawFilename);
+  
+  // Chemins possibles
+  const storagePath = path.join(UPLOAD_DIR, filename);
+  const publicPath = path.join(process.cwd(), "public", "uploads", filename);
 
-  // Sécurité: vérifier que le chemin reste dans UPLOAD_DIR
-  if (!filePath.startsWith(UPLOAD_DIR)) {
-     return new NextResponse("Accès refusé", { status: 403 });
+  let filePath = storagePath;
+  let exists = fs.existsSync(storagePath);
+
+  if (!exists && fs.existsSync(publicPath)) {
+    filePath = publicPath;
+    exists = true;
+  }
+
+  if (!exists) {
+    return new NextResponse("Fichier non trouvé", { status: 404 });
   }
 
   try {
-    if (!fs.existsSync(filePath)) {
-      return new NextResponse("Fichier non trouvé", { status: 404 });
-    }
-
     const fileBuffer = await readFile(filePath);
     
     // Déterminer le type MIME (basique)
