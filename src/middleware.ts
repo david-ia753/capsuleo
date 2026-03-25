@@ -1,71 +1,53 @@
+import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
-import type { NextRequest } from "next/server";
 
-export async function middleware(req: NextRequest) {
+const { auth } = NextAuth(authConfig);
+
+export default auth((req) => {
   const { pathname } = req.nextUrl;
-  
-  // 1. Toujours autoriser les routes d'auth et de santé
-  if (
-    pathname.startsWith("/api/auth") || 
-    pathname.startsWith("/auth/") ||
-    pathname.startsWith("/register") ||
-    pathname === "/api/health"
-  ) {
+  const isLoggedIn = !!req.auth;
+
+  // 1. Autoriser les routes publiques, auth et assets
+  const publicRoutes = ["/auth/login", "/auth/error", "/register", "/auth/setup-password"];
+  const isPublicRoute = publicRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"));
+  const isAuthRoute = pathname.startsWith("/api/auth");
+  const isAsset = pathname.startsWith("/_next") || pathname.startsWith("/favicon.ico") || pathname.includes(".");
+
+  if (isPublicRoute || isAuthRoute || isAsset) {
     return NextResponse.next();
   }
 
-  // 2. Assets statiques
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon.ico") ||
-    pathname.includes(".")
-  ) {
-    return NextResponse.next();
+  // 2. Protection si non-connecté
+  if (!isLoggedIn) {
+    const loginUrl = new URL("/auth/login", req.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // 3. Récupération du secret
-  const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "antigravity-dev-secret-key-change-in-production-2024";
+  // 3. Protections spécifiques Rôles (Admin/Dashboard)
+  const user = req.auth?.user;
+  const role = (user?.role as string || "STUDENT").toUpperCase();
+  const isAdmin = role === "ADMIN";
+  const isTrainer = role === "TRAINER";
 
-  try {
-    // getToken gère automatiquement la détection du cookie (Secure ou non)
-    const token = await getToken({ 
-      req, 
-      secret,
-    });
+  // Protection /admin
+  if (pathname.startsWith("/admin")) {
+    const trainerAllowedPaths = ["/admin/groups", "/admin/modules", "/admin/stagiaires", "/admin/upload", "/admin/profile", "/admin/settings", "/admin/dashboard"];
+    const isAllowedForTrainer = trainerAllowedPaths.some(p => pathname.startsWith(p));
 
-    if (!token) {
-      // Pas de session -> redirection vers login
-      const loginUrl = new URL("/auth/login", req.url);
-      loginUrl.searchParams.set("callbackUrl", pathname);
-      return NextResponse.redirect(loginUrl);
+    if (!isAdmin && !(isTrainer && isAllowedForTrainer)) {
+      return NextResponse.redirect(new URL(role === "STUDENT" ? "/catalogue" : "/admin/dashboard", req.url));
     }
+  }
 
-    const role = (token.role as string || "STUDENT").toUpperCase();
-    const isAdmin = role === "ADMIN";
-    const isTrainer = role === "TRAINER";
-
-    // 4. Protections spécifiques (Admin/Dashboard)
-    if (pathname.startsWith("/admin")) {
-      const trainerAllowedPaths = ["/admin/groups", "/admin/modules", "/admin/stagiaires", "/admin/upload", "/admin/profile", "/admin/settings", "/admin/dashboard"];
-      const isAllowedForTrainer = trainerAllowedPaths.some(p => pathname.startsWith(p));
-
-      if (!isAdmin && !(isTrainer && isAllowedForTrainer)) {
-        return NextResponse.redirect(new URL(role === "STUDENT" ? "/catalogue" : "/admin/dashboard", req.url));
-      }
-    }
-
-    if (pathname.startsWith("/dashboard") && !isAdmin && !isTrainer) {
-      return NextResponse.redirect(new URL("/catalogue", req.url));
-    }
-
-  } catch (error) {
-    console.error(">>> MIDDLEWARE JWT ERROR:", error);
-    return NextResponse.redirect(new URL("/auth/login", req.url));
+  // Protection /dashboard
+  if (pathname.startsWith("/dashboard") && !isAdmin && !isTrainer) {
+    return NextResponse.redirect(new URL("/catalogue", req.url));
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: ["/((?!api/upload|_next/static|_next/image|favicon.ico).*)"],
