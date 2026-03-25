@@ -5,13 +5,17 @@ import type { NextRequest } from "next/server";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   
-  // 1. Routes publiques (toujours autorisées)
-  const publicRoutes = ["/auth/login", "/auth/error", "/register", "/auth/setup-password", "/api/auth"];
-  if (publicRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
+  // 1. Toujours autoriser les routes d'auth et de santé
+  if (
+    pathname.startsWith("/api/auth") || 
+    pathname.startsWith("/auth/") ||
+    pathname.startsWith("/register") ||
+    pathname === "/api/health"
+  ) {
     return NextResponse.next();
   }
 
-  // 2. Assets et fichiers statiques
+  // 2. Assets statiques
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon.ico") ||
@@ -20,17 +24,14 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. Détection du cookie de session (NextAuth v5 / Auth.js)
-  const isProd = process.env.NODE_ENV === "production";
-  const cookieName = isProd ? "__Secure-authjs.session-token" : "authjs.session-token";
-  
-  const secret = process.env.AUTH_SECRET || "antigravity-dev-secret-key-change-in-production-2024";
+  // 3. Récupération du secret
+  const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "antigravity-dev-secret-key-change-in-production-2024";
 
   try {
+    // getToken gère automatiquement la détection du cookie (Secure ou non)
     const token = await getToken({ 
       req, 
       secret,
-      salt: cookieName, // Forcer le salt basé sur le nom du cookie
     });
 
     if (!token) {
@@ -44,38 +45,23 @@ export async function middleware(req: NextRequest) {
     const isAdmin = role === "ADMIN";
     const isTrainer = role === "TRAINER";
 
-    // 4. Protection /admin - réservé ADMIN et TRAINER (sur routes limitées)
+    // 4. Protections spécifiques (Admin/Dashboard)
     if (pathname.startsWith("/admin")) {
-      const trainerAllowedPaths = [
-        "/admin/groups", 
-        "/admin/modules", 
-        "/admin/stagiaires", 
-        "/admin/upload", 
-        "/admin/profile", 
-        "/admin/settings",
-        "/admin/dashboard"
-      ];
-      
+      const trainerAllowedPaths = ["/admin/groups", "/admin/modules", "/admin/stagiaires", "/admin/upload", "/admin/profile", "/admin/settings", "/admin/dashboard"];
       const isAllowedForTrainer = trainerAllowedPaths.some(p => pathname.startsWith(p));
 
       if (!isAdmin && !(isTrainer && isAllowedForTrainer)) {
-        const redirectUrl = role === "STUDENT" ? "/catalogue" : "/admin/dashboard";
-        return NextResponse.redirect(new URL(redirectUrl, req.url));
+        return NextResponse.redirect(new URL(role === "STUDENT" ? "/catalogue" : "/admin/dashboard", req.url));
       }
     }
 
-    // 5. Protection /dashboard (Formateur)
-    if (pathname.startsWith("/dashboard")) {
-      if (!isAdmin && !isTrainer) {
-        return NextResponse.redirect(new URL("/catalogue", req.url));
-      }
+    if (pathname.startsWith("/dashboard") && !isAdmin && !isTrainer) {
+      return NextResponse.redirect(new URL("/catalogue", req.url));
     }
 
   } catch (error) {
-    console.error("Middleware Error:", error);
-    // En cas d'erreur critique de décodage, on redirige vers login pour forcer une nouvelle session
-    const loginUrl = new URL("/auth/login", req.url);
-    return NextResponse.redirect(loginUrl);
+    console.error(">>> MIDDLEWARE JWT ERROR:", error);
+    return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
   return NextResponse.next();
