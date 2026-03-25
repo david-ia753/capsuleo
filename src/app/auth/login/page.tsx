@@ -43,20 +43,35 @@ function LoginForm() {
           setError("Identifiants incorrects. Vérifiez votre email et mot de passe.");
         }
       } else {
-        // Redirection dynamique basee sur le role
-        const sessionRes = await fetch("/api/auth/session");
-        const session = await sessionRes.json();
-        
-        if (session?.user?.role === "ADMIN") {
-          router.push("/admin/dashboard");
-        } else if (session?.user?.role === "TRAINER") {
-          router.push("/dashboard");
-        } else {
-          router.push("/catalogue");
+        // Succès de l'authentification - Récupération de la session
+        try {
+          const sessionRes = await fetch("/api/auth/session", { cache: 'no-store' });
+          if (!sessionRes.ok) {
+            throw new Error(`Session API Error: ${sessionRes.status}`);
+          }
+          const session = await sessionRes.json();
+          
+          if (!session?.user?.role) {
+            console.warn("Session without role, defaulting to STUDENT");
+          }
+
+          let destination = "/catalogue";
+          if (session?.user?.role === "ADMIN") {
+            destination = "/admin/dashboard";
+          } else if (session?.user?.role === "TRAINER") {
+            destination = "/dashboard";
+          }
+
+          // Utiliser window.location.href pour forcer un rechargement complet
+          // et s'assurer que le middleware voit les nouveaux cookies
+          window.location.href = destination;
+        } catch (err) {
+          console.error("Session retrieval error:", err);
+          setError("Session établie mais redirection impossible. Veuillez rafraîchir la page.");
         }
-        router.refresh();
       }
-    } catch {
+    } catch (err) {
+      console.error("Login catch block:", err);
       setError("Erreur de connexion inattendue.");
     } finally {
       setIsLoading(false);
