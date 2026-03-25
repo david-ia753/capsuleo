@@ -31,7 +31,7 @@ export async function middleware(req: NextRequest) {
   // Utiliser getToken : gère automatiquement les cookies (Secure ou non), le secret et les sels.
   const token = await getToken({ 
     req, 
-    secret: process.env.AUTH_SECRET,
+    secret: process.env.AUTH_SECRET || "antigravity-dev-secret-key-change-in-production-2024",
     // Note: getToken extrait automatiquement le token du bon cookie
   });
 
