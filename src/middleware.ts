@@ -5,21 +5,13 @@ import type { NextRequest } from "next/server";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   
-  // console.log(`>>> MIDDLEWARE START: ${pathname}`);
-
-  // Routes publiques — pas de protection
-  const publicRoutes = ["/auth/login", "/auth/error", "/register", "/auth/setup-password"];
-  
+  // 1. Routes publiques (toujours autorisées)
+  const publicRoutes = ["/auth/login", "/auth/error", "/register", "/auth/setup-password", "/api/auth"];
   if (publicRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
     return NextResponse.next();
   }
 
-  // API auth — pas de protection
-  if (pathname.startsWith("/api/auth")) {
-    return NextResponse.next();
-  }
-
-  // Assets statiques — pas de protection
+  // 2. Assets et fichiers statiques
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon.ico") ||
@@ -28,50 +20,62 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Utiliser getToken : gère automatiquement les cookies (Secure ou non), le secret et les sels.
-  const token = await getToken({ 
-    req, 
-    secret: process.env.AUTH_SECRET || "antigravity-dev-secret-key-change-in-production-2024",
-    // Note: getToken extrait automatiquement le token du bon cookie
-  });
+  // 3. Détection du cookie de session (NextAuth v5 / Auth.js)
+  const isProd = process.env.NODE_ENV === "production";
+  const cookieName = isProd ? "__Secure-authjs.session-token" : "authjs.session-token";
+  
+  const secret = process.env.AUTH_SECRET || "antigravity-dev-secret-key-change-in-production-2024";
 
-  if (!token) {
-    // console.log(`>>> MIDDLEWARE NO SESSION: Redirection vers login depuis ${pathname}`);
+  try {
+    const token = await getToken({ 
+      req, 
+      secret,
+      salt: cookieName, // Forcer le salt basé sur le nom du cookie
+    });
+
+    if (!token) {
+      // Pas de session -> redirection vers login
+      const loginUrl = new URL("/auth/login", req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    const role = (token.role as string || "STUDENT").toUpperCase();
+    const isAdmin = role === "ADMIN";
+    const isTrainer = role === "TRAINER";
+
+    // 4. Protection /admin - réservé ADMIN et TRAINER (sur routes limitées)
+    if (pathname.startsWith("/admin")) {
+      const trainerAllowedPaths = [
+        "/admin/groups", 
+        "/admin/modules", 
+        "/admin/stagiaires", 
+        "/admin/upload", 
+        "/admin/profile", 
+        "/admin/settings",
+        "/admin/dashboard"
+      ];
+      
+      const isAllowedForTrainer = trainerAllowedPaths.some(p => pathname.startsWith(p));
+
+      if (!isAdmin && !(isTrainer && isAllowedForTrainer)) {
+        const redirectUrl = role === "STUDENT" ? "/catalogue" : "/admin/dashboard";
+        return NextResponse.redirect(new URL(redirectUrl, req.url));
+      }
+    }
+
+    // 5. Protection /dashboard (Formateur)
+    if (pathname.startsWith("/dashboard")) {
+      if (!isAdmin && !isTrainer) {
+        return NextResponse.redirect(new URL("/catalogue", req.url));
+      }
+    }
+
+  } catch (error) {
+    console.error("Middleware Error:", error);
+    // En cas d'erreur critique de décodage, on redirige vers login pour forcer une nouvelle session
     const loginUrl = new URL("/auth/login", req.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
-  }
-
-  // console.log(`>>> MIDDLEWARE SESSION FOUND: Role=${token.role} pour ${pathname}`);
-
-  // Normalisation du rôle (sécurité sup)
-  const role = token.role as string;
-  const isAdmin = role === "ADMIN";
-  const isTrainer = role === "TRAINER";
-
-  // Protection /admin - ADMIN et TRAINER (pour les routes de gestion partagées)
-  if (pathname.startsWith("/admin")) {
-    const isTrainerAllowedRoute = 
-      pathname.startsWith("/admin/groups") || 
-      pathname.startsWith("/admin/modules") || 
-      pathname.startsWith("/admin/stagiaires") || 
-      pathname.startsWith("/admin/upload") ||
-      pathname.startsWith("/admin/profile") ||
-      pathname.startsWith("/admin/settings") || // AJOUTÉ
-      pathname === "/admin/dashboard";
-
-    if (!isAdmin && !(isTrainer && isTrainerAllowedRoute)) {
-      // Si c'est un stagiaire ou un formateur sur une route non autorisée
-      const redirectUrl = role === "STUDENT" ? "/catalogue" : "/admin/dashboard";
-      return NextResponse.redirect(new URL(redirectUrl, req.url));
-    }
-  }
-
-  // Protection /dashboard (Trainer) - ADMIN ou TRAINER uniquement
-  if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
-    if (!isAdmin && !isTrainer) {
-      return NextResponse.redirect(new URL("/catalogue", req.url));
-    }
   }
 
   return NextResponse.next();
