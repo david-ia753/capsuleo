@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { SessionProvider } from "@/components/SessionProvider";
 import { MobileHeader } from "@/components/MobileHeader";
@@ -13,7 +13,7 @@ export default async function AdminLayout({
 }) {
   const session = await auth();
 
-  if (!session?.user || session.user.role !== "ADMIN") {
+  if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "TRAINER")) {
     redirect("/auth/login");
   }
 

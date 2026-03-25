@@ -24,7 +24,7 @@ export default function AdminClientLayoutWrapper({
       {/* Admin Sidebar */}
       <Sidebar 
         session={session} 
-        role="ADMIN" 
+        role={session?.user?.role || "STUDENT"} 
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
