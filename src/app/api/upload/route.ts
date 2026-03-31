@@ -7,6 +7,7 @@ import { writeFile, mkdir, readFile } from "fs/promises";
 import path from "path";
 import { prisma } from "@/lib/prisma";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getStorageDir } from "@/lib/storage";
 
 
 // Les fonctions d'extraction et de nettoyage ont été déplacées vers le service de finalisation
@@ -67,11 +68,8 @@ ${limitedText || "Analyse ce module général."}`;
   return null;
 }
 
-const UPLOAD_DIR = process.env.NODE_ENV === "production" 
-  ? "/app/storage/uploads" 
-  : path.join(process.cwd(), "storage", "uploads");
-
 export async function POST(request: NextRequest) {
+  const UPLOAD_DIR = await getStorageDir();
   const session = await auth();
   if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "TRAINER")) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 401 });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import fs from "fs";
 import path from "path";
+import { getStorageDir, getStorageDiagnostics } from "@/lib/storage";
 
 export async function GET(request: NextRequest) {
   const session = await auth();
@@ -9,11 +10,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 401 });
   }
 
-  const UPLOAD_DIR = process.env.NODE_ENV === "production" 
-    ? "/app/storage/uploads" 
-    : path.join(process.cwd(), "storage", "uploads");
-
+  const UPLOAD_DIR = await getStorageDir();
   const results: any = {};
+  results.storage = getStorageDiagnostics();
 
   // 1. Log d'upload (EACCES etc)
   try {

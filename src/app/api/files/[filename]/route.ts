@@ -3,16 +3,14 @@ import { auth } from "@/auth";
 import { readFile } from "fs/promises";
 import path from "path";
 import fs from "fs";
+import { getStorageDir } from "@/lib/storage";
 
 // Le même dossier que dans l'API d'upload
-const UPLOAD_DIR = process.env.NODE_ENV === "production" 
-  ? "/app/storage/uploads" 
-  : path.join(process.cwd(), "storage", "uploads");
-
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ filename: string }> }
 ) {
+  const UPLOAD_DIR = await getStorageDir();
   const session = await auth();
   if (!session) {
     return new NextResponse("Non autorisé", { status: 401 });

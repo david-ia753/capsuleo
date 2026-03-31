@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import path from "path";
 import fs from "fs";
+import { getStorageDir } from "@/lib/storage";
 
 export const maxDuration = 300; 
 
@@ -139,9 +140,7 @@ export async function POST(request: NextRequest) {
       if (textToUse.length < 10 && file.path && file.category !== 'AUDIO' && file.originalName.toLowerCase().endsWith(".pdf")) {
         try {
           const filename = file.path.split("/").pop();
-          const UPLOAD_DIR = process.env.NODE_ENV === "production" 
-            ? "/app/storage/uploads" 
-            : path.join(process.cwd(), "storage", "uploads");
+          const UPLOAD_DIR = await getStorageDir();
           const fullPath = path.join(UPLOAD_DIR, filename || "");
           
           if (fs.existsSync(fullPath)) {
