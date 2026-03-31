@@ -30,21 +30,19 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN addgroup --system --gid 1000 nodejs
-RUN adduser --system --uid 1000 nextjs
-
 # Set correct permissions for storage
+# In node:alpine, the 'node' user already exists with UID 1000
 RUN mkdir -p /app/storage/uploads && \
     mkdir -p /app/public/uploads && \
-    chown -R nextjs:nodejs /app/storage /app/public && \
+    chown -R node:node /app/storage /app/public && \
     chmod -R 775 /app/storage /app/public
 
 # Copy the standalone build from the builder stage
 COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 
-USER nextjs
+USER node
 
 EXPOSE 3000
 ENV PORT=3000
